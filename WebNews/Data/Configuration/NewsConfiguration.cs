@@ -9,9 +9,32 @@ public class NewsConfiguration : IEntityTypeConfiguration<News>
     public void Configure(EntityTypeBuilder<News> builder)
     {
         builder.HasKey(x => x.Id);
+
         builder
             .HasOne(x => x.User)
             .WithMany(x => x.News)
             .HasForeignKey(x => x.UserId);
+
+        builder.Property(x => x.Title)
+            .IsRequired()
+            .HasMaxLength(400);
+
+        builder.Property(x => x.Subtitle)
+            .IsRequired()
+            .HasMaxLength(1000);
+
+        builder.Property(x => x.Content)
+            .IsRequired()
+            .HasMaxLength(5000);
+
+        builder.Property(x => x.Image)
+            .HasColumnType("varbinary(max)");
+
+        builder.Property(x => x.Author)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(x => x.DateTime)
+            .HasColumnType("date");
     }
 }
