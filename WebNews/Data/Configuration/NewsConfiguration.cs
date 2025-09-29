@@ -20,19 +20,11 @@ public class NewsConfiguration : IEntityTypeConfiguration<News>
             .HasMaxLength(400);
 
         builder.Property(x => x.Subtitle)
-            .IsRequired()
             .HasMaxLength(1000);
 
         builder.Property(x => x.Content)
             .IsRequired()
             .HasMaxLength(5000);
-
-        builder.Property(x => x.Image)
-            .HasColumnType("varbinary(max)");
-
-        builder.Property(x => x.Author)
-            .IsRequired()
-            .HasMaxLength(100);
 
         builder.Property(x => x.DateTime)
             .HasColumnType("date");
