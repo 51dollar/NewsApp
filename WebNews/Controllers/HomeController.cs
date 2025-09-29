@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using MVC_Web_News.Services;
 using WebNews.Models;
 
 namespace WebNews.Controllers;
@@ -7,15 +8,18 @@ namespace WebNews.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly INewsService _newsService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(INewsService newsService, ILogger<HomeController> logger)
     {
         _logger = logger;
+        _newsService = newsService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var latestNew = await _newsService.GetLatestNewsAsync(5);
+        return View(latestNew);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
