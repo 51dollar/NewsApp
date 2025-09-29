@@ -4,7 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>MVC_Web_News</RootNamespace>
+        <RootNamespace>WebNews</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
