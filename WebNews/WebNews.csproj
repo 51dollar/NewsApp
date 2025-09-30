@@ -4,7 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>MVC_Web_News</RootNamespace>
+        <RootNamespace>WebNews</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,6 +19,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Views\News\"/>
     </ItemGroup>
 
 </Project>
