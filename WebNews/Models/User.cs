@@ -4,7 +4,7 @@ namespace WebNews.Models;
 
 public class User
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     [Required(ErrorMessage = "Username is required")]
     [MaxLength(50, ErrorMessage = "Username cannot be longer than 50 characters")]

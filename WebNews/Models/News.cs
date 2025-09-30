@@ -5,7 +5,7 @@ namespace WebNews.Models;
 
 public class News
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     [Required(ErrorMessage = "Title is required")]
     [MaxLength(400, ErrorMessage = "Title cannot be longer than 400 characters")]
@@ -20,7 +20,7 @@ public class News
 
     public string? Image { get; set; }
 
-    public string Author { get; set; }
+    public string Author { get; set; } = string.Empty;
 
     [DataType(DataType.Date)]
     public DateTime DateTime { get; set; } = DateTime.UtcNow;

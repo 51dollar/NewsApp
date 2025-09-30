@@ -20,11 +20,16 @@ public class NewsConfiguration : IEntityTypeConfiguration<News>
             .HasMaxLength(400);
 
         builder.Property(x => x.Subtitle)
+            .IsRequired(false)
             .HasMaxLength(1000);
 
         builder.Property(x => x.Content)
             .IsRequired()
             .HasMaxLength(5000);
+
+        builder.Property(n => n.Author)
+            .IsRequired(false)
+            .HasMaxLength(100);
 
         builder.Property(x => x.DateTime)
             .HasColumnType("date");
