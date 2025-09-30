@@ -18,16 +18,16 @@ public class News
     [MaxLength(5000, ErrorMessage = "Content cannot exceed 5000 characters")]
     public string Content { get; set; }
 
-    public string? Image { get; set; }
+    public string? ImagePath { get; set; }
 
-    public string Author { get; set; } = string.Empty;
+    public string? Author { get; set; } = string.Empty;
 
     [DataType(DataType.Date)]
     public DateTime DateTime { get; set; } = DateTime.UtcNow;
 
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; } = Guid.Parse("5f5eef07-2cce-4bb1-ae61-7584cee5abc7");
 
-    public User User { get; set; }
+    public User? User { get; set; }
 
     [NotMapped]
     public DateTime PublishDateTime => DateTime.ToLocalTime();

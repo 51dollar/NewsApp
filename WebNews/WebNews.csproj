@@ -22,7 +22,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Views\News\"/>
+        <Content Update="Image\default.png">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="wwwroot\Image\default.png"/>
     </ItemGroup>
 
 </Project>

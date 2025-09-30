@@ -1,4 +1,4 @@
-@model WebNews.Models.News
+@model WebNews.Models.ViewModels.NewsViewModel
 
 @{
     ViewData["Title"] = "Create Post";
@@ -11,24 +11,19 @@
 
     <form asp-action="Create" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-4">
         <div>
-            <label asp-for="Title" class="fs-4"></label>
-            <input asp-for="Title" class="form-control"/>
-            <span asp-validation-for="Title" class="text-danger"></span>
+            <label asp-for="News.Title" class="fs-4"></label>
+            <input asp-for="News.Title" class="form-control"/>
+            <span asp-validation-for="News.Title" class="text-danger"></span>
         </div>
         <div>
-            <label asp-for="Subtitle" class="fs-4"></label>
-            <input asp-for="Subtitle" class="form-control"/>
-            <span asp-validation-for="Subtitle" class="text-danger"></span>
+            <label asp-for="News.Subtitle" class="fs-4"></label>
+            <input asp-for="News.Subtitle" class="form-control"/>
+            <span asp-validation-for="News.Subtitle" class="text-danger"></span>
         </div>
         <div>
-            <label asp-for="Author" class="fs-4"></label>
-            <input asp-for="Author" class="form-control"/>
-            <span asp-validation-for="Author" class="text-danger"></span>
-        </div>
-        <div>
-            <label asp-for="Content" class="fs-4"></label>
-            <textarea asp-for="Content" class="form-control" rows="5"></textarea>
-            <span asp-validation-for="Content" class="text-danger"></span>
+            <label asp-for="News.Content" class="fs-4"></label>
+            <textarea asp-for="News.Content" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="News.Content" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="Image" class="fs-4"></label>

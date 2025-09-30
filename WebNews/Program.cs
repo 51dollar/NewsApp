@@ -1,6 +1,7 @@
 using MVC_Web_News.Services;
 using WebNews.Data.Extensions;
 using WebNews.Data.UnitOfWork;
+using WebNews.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<UploadFileToFolder>();
 
 var app = builder.Build();
 
