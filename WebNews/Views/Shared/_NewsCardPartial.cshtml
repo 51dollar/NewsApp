@@ -14,6 +14,11 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>
                     <p class="card-text text-muted">@item.Subtitle</p>
+                    <p class="card-text">
+                        @(HtmlTagHelper.RemoveHtmlTags(item.Content).Length > 100
+                            ? HtmlTagHelper.RemoveHtmlTags(item.Content).Substring(0, 100) + "..."
+                            : HtmlTagHelper.RemoveHtmlTags(item.Content))
+                    </p>
                 </div>
 
                 <div class="card-footer d-flex justify-content-between px-3 pb-2">
