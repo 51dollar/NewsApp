@@ -1,27 +1,7 @@
-﻿@model IEnumerable<News>
-
-@{
+﻿@{
     ViewData["Title"] = "Admin Panel";
 }
 
 <div class="container mt-4">
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="@(string.IsNullOrEmpty(item.ImagePath)
-                                  ? Url.Content("~/Image/default.png")
-                                  : Url.Content(item.ImagePath))"
-                         class=" card-img-top img-fluid"
-                         style="max-height:200px; object-fit:cover;"/>
-
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text text-muted">@item.Subtitle</p>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
+    @await Html.PartialAsync("_NewsCardPartial")
 </div>
