@@ -51,6 +51,10 @@ public class AdminController : Controller
 
                 newsViewModel.News.ImagePath = await _fileHelper.uploadFileAsync(newsViewModel.Image);
             }
+            else
+            {
+                newsViewModel.News.ImagePath = "/Image/default.png";
+            }
 
             await _newsService.CreateNewsAsync(newsViewModel.News);
             return RedirectToAction("Index");

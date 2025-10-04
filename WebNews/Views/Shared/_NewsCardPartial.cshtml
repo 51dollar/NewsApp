@@ -4,28 +4,29 @@
     @foreach (var item in Model)
     {
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <img src="@(string.IsNullOrEmpty(item.ImagePath)
-                              ? Url.Content("~/Image/default.png")
-                              : item.ImagePath)"
-                     class="card-img-top img-fluid"
-                     style="max-height:200px; object-fit:cover;"/>
+            <a asp-controller="News" asp-action="Details" asp-route-id="@item.Id"
+               class="text-decoration-none text-dark">
+                <div class="card h-100 shadow-sm">
+                    <img src="@(item.ImagePath)"
+                         class="card-img-top img-fluid"
+                         style="max-height:200px; object-fit:cover;"/>
 
-                <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text text-muted">@item.Subtitle</p>
-                    <p class="card-text">
-                        @(HtmlTagHelper.RemoveHtmlTags(item.Content).Length > 100
-                            ? HtmlTagHelper.RemoveHtmlTags(item.Content).Substring(0, 100) + "..."
-                            : HtmlTagHelper.RemoveHtmlTags(item.Content))
-                    </p>
-                </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text text-muted">@item.Subtitle</p>
+                        <p class="card-text">
+                            @(HtmlTagHelper.RemoveHtmlTags(item.Content).Length > 100
+                                ? HtmlTagHelper.RemoveHtmlTags(item.Content).Substring(0, 100) + "..."
+                                : HtmlTagHelper.RemoveHtmlTags(item.Content))
+                        </p>
+                    </div>
 
-                <div class="card-footer d-flex justify-content-between px-3 pb-2">
-                    <p class="text-muted mb-0">@item.PublishDateTime.ToString("dd MMMM yyyy")</p>
-                    <p class="text-muted mb-0">@item.Author</p>
+                    <div class="card-footer d-flex justify-content-between px-3 pb-2">
+                        <p class="text-muted mb-0">@item.PublishDateTime.ToString("dd MMMM yyyy")</p>
+                        <p class="text-muted mb-0">@item.Author</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     }
 </div>
