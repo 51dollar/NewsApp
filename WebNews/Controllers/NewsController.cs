@@ -19,8 +19,14 @@ public class NewsController : Controller
         return View(allNews);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
         var news = await _newsService.GetNewsByIdAsync(id);
 
         if (news == null)

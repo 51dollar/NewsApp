@@ -1,0 +1,18 @@
+@model News
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="content-wrapper">
+    <h1 class="text-center">@Model.Title</h1>
+    <p>
+        <span class="badge bg-primary">By:</span>
+        @Model.Author |
+        <span class="badge bg-primary">Published on</span>
+        @Model.PublishDateTime.ToString("dd MMMM yyyy")
+    </p>
+    <img src="@Model.ImagePath" alt="@Model.Title" class="feature-image"/>
+    <hr/>
+    <div>@Html.Raw(Model.Content)</div>
+</div>
