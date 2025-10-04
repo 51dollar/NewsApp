@@ -30,6 +30,6 @@ public class UploadFileToFolder
             return "Error uploading file: " + e.Message;
         }
 
-        return filePath;
+        return $"/Image/{fileName}";
     }
 }
