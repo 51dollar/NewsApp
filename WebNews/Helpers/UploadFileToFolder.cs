@@ -20,9 +20,9 @@ public class UploadFileToFolder
 
         try
         {
-            await using (var fileStram = new FileStream(filePath, FileMode.Create))
+            await using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                await file.CopyToAsync(fileStram);
+                await file.CopyToAsync(fileStream);
             }
         }
         catch (Exception e)
