@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MVC_Web_News.Services;
+using WebNews.Services;
 using WebNews.Helpers;
-using WebNews.Models;
 using WebNews.Models.ViewModels;
 
 namespace WebNews.Controllers;
@@ -56,6 +55,8 @@ public class AdminController : Controller
                 newsViewModel.News.ImagePath = "/Image/default.png";
             }
 
+            newsViewModel.News.Author = "Admin";
+
             await _newsService.CreateNewsAsync(newsViewModel.News);
             return RedirectToAction("Index");
         }
@@ -63,26 +64,54 @@ public class AdminController : Controller
         return View(newsViewModel);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
     {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
         var news = await _newsService.GetNewsByIdAsync(id);
         if (news == null)
         {
             return NotFound();
         }
 
-        return View(news);
+        NewsViewModel newsViewModel = new NewsViewModel
+        {
+            News = news
+        };
+
+        return View(newsViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(News news)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(NewsViewModel newsViewModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(news);
+            return View(newsViewModel);
         }
 
-        await _newsService.UpdateNewsAsync(news);
+        var existingNews = await _newsService.GetNewsByIdAsync(newsViewModel.News.Id);
+        if (existingNews == null)
+        {
+            return NotFound();
+        }
+
+        existingNews.Title = newsViewModel.News.Title;
+        existingNews.Subtitle = newsViewModel.News.Subtitle;
+        existingNews.Content = newsViewModel.News.Content;
+
+        if (newsViewModel.Image != null)
+        {
+            var newImagePath = await _fileHelper.uploadFileAsync(newsViewModel.Image);
+            existingNews.ImagePath = newImagePath;
+        }
+
+        await _newsService.UpdateNewsAsync(existingNews);
         return RedirectToAction("Index");
     }
 

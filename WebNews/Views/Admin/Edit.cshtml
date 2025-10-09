@@ -1,0 +1,55 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model WebNews.Models.ViewModels.NewsViewModel
+
+@{
+    ViewData["Title"] = "Edit Post";
+}
+
+<div class="content-wrapper">
+    <div class="d-flex justify-content-center">
+        <h2>@ViewData["Title"]</h2>
+    </div>
+
+    <form asp-action="Edit" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-4">
+        <div hidden>
+            <label asp-for="News.Id" class="fs-4"></label>
+            <input asp-for="News.Id" class="form-control"/>
+            <span asp-validation-for="News.Id" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="News.Title" class="fs-4"></label>
+            <input asp-for="News.Title" class="form-control"/>
+            <span asp-validation-for="News.Title" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="News.Subtitle" class="fs-4"></label>
+            <input asp-for="News.Subtitle" class="form-control"/>
+            <span asp-validation-for="News.Subtitle" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="News.Content" class="fs-4"></label>
+            <textarea asp-for="News.Content" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="News.Content" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Image" class="fs-4"></label>
+            <input asp-for="Image" type="file" class="form-control"/>
+        </div>
+        <div class="d-flex justify-content-center gap-2 mt-4">
+            <button type="submit" class="btn btn-primary mt-1">Edit News</button>
+            <a asp-action="Index" class="btn btn-secondary mt-1">Back to Page</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.tiny.cloud/1/n5gl0ojmi9mhlq3hbb18oz2k4j9qt1gm76opakrtix630ntm/tinymce/8/tinymce.min.js"
+            referrerpolicy="origin" crossorigin="anonymous"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea'
+        });
+    </script>
+}
