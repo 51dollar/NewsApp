@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using MVC_Web_News.Services;
+using WebNews.Services;
 using WebNews.Models;
 
 namespace WebNews.Controllers;

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MVC_Web_News.Services;
+using WebNews.Services;
 
 
 namespace WebNews.Controllers;

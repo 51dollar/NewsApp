@@ -1,4 +1,4 @@
-using MVC_Web_News.Services;
+using WebNews.Services;
 using WebNews.Data.Extensions;
 using WebNews.Data.UnitOfWork;
 using WebNews.Helpers;

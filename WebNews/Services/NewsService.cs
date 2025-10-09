@@ -1,7 +1,7 @@
 using WebNews.Data.UnitOfWork;
 using WebNews.Models;
 
-namespace MVC_Web_News.Services;
+namespace WebNews.Services;
 
 public class NewsService : INewsService
 {
