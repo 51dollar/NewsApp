@@ -5,7 +5,7 @@ namespace WebNews.Models;
 
 public class News
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Title is required")]
     [MaxLength(400, ErrorMessage = "Title cannot be longer than 400 characters")]
