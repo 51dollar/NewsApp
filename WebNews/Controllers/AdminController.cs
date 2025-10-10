@@ -22,7 +22,7 @@ public class AdminController : Controller
     public async Task<IActionResult> Index()
     {
         var allNews = await _newsService.GetAllNewsAsync();
-        return View(allNews);
+        return View(allNews.OrderByDescending(n => n.DateTime));
     }
 
     public IActionResult Create()
@@ -72,15 +72,15 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        var news = await _newsService.GetNewsByIdAsync(id);
-        if (news == null)
+        var newsFromDb = await _newsService.GetNewsByIdAsync(id);
+        if (newsFromDb == null)
         {
             return NotFound();
         }
 
         NewsViewModel newsViewModel = new NewsViewModel
         {
-            News = news
+            News = newsFromDb
         };
 
         return View(newsViewModel);
@@ -104,6 +104,7 @@ public class AdminController : Controller
         existingNews.Title = newsViewModel.News.Title;
         existingNews.Subtitle = newsViewModel.News.Subtitle;
         existingNews.Content = newsViewModel.News.Content;
+        existingNews.DateTime = DateTime.UtcNow;
 
         if (newsViewModel.Image != null)
         {
