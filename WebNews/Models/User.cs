@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using WebNews.Helpers;
 
 namespace WebNews.Models;
 
@@ -19,7 +21,15 @@ public class User
     [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
     [MaxLength(50, ErrorMessage = "Password cannot be longer than 50 characters")]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public string PasswordHash { get; set; }
+
+    public string Role { get; set; } = RoleType.User;
+
+    [DataType(DataType.Date)]
+    public DateTime DateCreate { get; set; } = DateTime.UtcNow;
+
+    [NotMapped]
+    public DateTime PublishDateCreate => DateCreate.ToLocalTime();
 
     public ICollection<News> News { get; set; } = new List<News>();
 }
