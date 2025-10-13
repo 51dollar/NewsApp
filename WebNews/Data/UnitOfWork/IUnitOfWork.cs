@@ -1,10 +1,12 @@
 using WebNews.Data.Repository;
+using WebNews.Data.Repository.Interfaces;
 using WebNews.Models;
 
 namespace WebNews.Data.UnitOfWork;
 
 public interface IUnitOfWork
 {
-    IRepository<News> NewsRepository { get; }
+    INewsRepository NewsRepository { get; }
+    IUserRepository UserRepository { get; }
     Task SaveAsync();
 }

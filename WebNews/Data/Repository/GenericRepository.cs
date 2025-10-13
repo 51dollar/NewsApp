@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using WebNews.Data.Repository.Interfaces;
 
 namespace WebNews.Data.Repository;
 
-public class Repository<T> : IRepository<T> where T : class
+public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-    private readonly AppDbContext _context;
+    protected readonly AppDbContext _context;
 
-    public Repository(AppDbContext context)
+    public GenericRepository(AppDbContext context)
     {
         _context = context;
     }
@@ -16,7 +17,7 @@ public class Repository<T> : IRepository<T> where T : class
         return await _context.Set<T>().ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(Guid id)
+    public async Task<T?> GetByIdAsync(Guid id)
     {
         return await _context.Set<T>().FindAsync(id);
     }

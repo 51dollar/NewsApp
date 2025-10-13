@@ -1,28 +1,42 @@
 using WebNews.Data.Repository;
-using WebNews.Models;
+using WebNews.Data.Repository.Interfaces;
 
 namespace WebNews.Data.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
-    private Repository<News> _newsRepository;
+    private NewsRepository _newsRepository;
+    private UserRepository _userRepository;
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
     }
 
-    public IRepository<News> NewsRepository
+    public INewsRepository NewsRepository
     {
         get
         {
             if (_newsRepository == null)
             {
-                _newsRepository = new Repository<News>(_context);
+                _newsRepository = new NewsRepository(_context);
             }
 
             return _newsRepository;
+        }
+    }
+
+    public IUserRepository UserRepository
+    {
+        get
+        {
+            if (_userRepository == null)
+            {
+                _userRepository = new UserRepository(_context);
+            }
+
+            return _userRepository;
         }
     }
 
