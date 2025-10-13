@@ -13,7 +13,9 @@ builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<NewsService>();
+builder.Services.AddScoped<NewsService>();
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UploadFileToFolder>();
 
 var app = builder.Build();

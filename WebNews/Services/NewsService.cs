@@ -1,5 +1,6 @@
 using WebNews.Data.UnitOfWork;
 using WebNews.Models;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Services;
 
@@ -12,19 +13,19 @@ public class NewsService : INewsService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<News>> GetAllNewsAsync()
+    public async Task<IEnumerable<News>> GetAllAsync()
     {
         return await _unitOfWork.NewsRepository.GetAllAsync();
     }
 
-    public async Task<News> GetNewsByIdAsync(Guid id)
+    public async Task<News?> GetByIdAsync(Guid id)
     {
         return await _unitOfWork.NewsRepository.GetByIdAsync(id);
     }
 
-    public async Task<IEnumerable<News>> GetLatestNewsAsync(int count)
+    public async Task<IEnumerable<News>> GetLatestAsync(int count)
     {
-        var allNews = await GetAllNewsAsync();
+        var allNews = await GetAllAsync();
         var latestNews = allNews
             .OrderByDescending(n => n.DateTime)
             .Take(count);
@@ -32,21 +33,21 @@ public class NewsService : INewsService
         return latestNews;
     }
 
-    public async Task CreateNewsAsync(News news)
+    public async Task CreateAsync(News news)
     {
         await _unitOfWork.NewsRepository.AddAsync(news);
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task UpdateNewsAsync(News news)
+    public async Task UpdateAsync(News news)
     {
         _unitOfWork.NewsRepository.Update(news);
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task DeleteNewsAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        var getNews = await GetNewsByIdAsync(id);
+        var getNews = await GetByIdAsync(id);
 
         if (getNews != null)
         {
