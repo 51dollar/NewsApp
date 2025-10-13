@@ -9,11 +9,11 @@ namespace WebNews.Controllers;
 
 public class AuthController : Controller
 {
-    private readonly IUserService _service;
+    private readonly UserService _service;
     private readonly JwtService _jwtService;
     private readonly Hasher<User> _hasher;
 
-    public AuthController(IUserService service, JwtService jwtService, Hasher<User> hasher)
+    public AuthController(UserService service, JwtService jwtService, Hasher<User> hasher)
     {
         _service = service;
         _jwtService = jwtService;

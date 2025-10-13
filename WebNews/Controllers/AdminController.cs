@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebNews.Helpers;
 using WebNews.Models;
 using WebNews.Models.ViewModels;
+using WebNews.Services;
 using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
@@ -10,11 +11,11 @@ namespace WebNews.Controllers;
 //[Authorize]
 public class AdminController : Controller
 {
-    private readonly INewsService _service;
+    private readonly NewsService _service;
     private readonly UploadFileToFolder _fileHelper;
     private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
 
-    public AdminController(INewsService service, UploadFileToFolder fileHelper)
+    public AdminController(NewsService service, UploadFileToFolder fileHelper)
     {
         _service = service;
         _fileHelper = fileHelper;

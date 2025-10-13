@@ -8,7 +8,7 @@ public static class DbExtensions
     {
         services.AddDbContext<AppDbContext>(o =>
         {
-            o.UseSqlServer("Server=MIROTON;Database=WebNewsDb;Trusted_Connection=True;TrustServerCertificate=True;");
+            o.UseSqlServer("Server=THINKBOOK;Database=WebNewsDb;Trusted_Connection=True;TrustServerCertificate=True;");
         });
     }
 }

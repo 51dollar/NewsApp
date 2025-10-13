@@ -8,16 +8,16 @@ namespace WebNews.Controllers;
 
 public class NewsController : Controller
 {
-    private readonly IGenericService<News> _genericService;
+    private readonly NewsService _service;
 
-    public NewsController(IGenericService<News> genericService)
+    public NewsController(NewsService service)
     {
-        _genericService = genericService;
+        _service = service;
     }
 
     public async Task<IActionResult> Index()
     {
-        var allNews = await _genericService.GetAllAsync();
+        var allNews = await _service.GetAllAsync();
         return View(allNews);
     }
 
@@ -29,7 +29,7 @@ public class NewsController : Controller
             return NotFound();
         }
 
-        var news = await _genericService.GetByIdAsync(id);
+        var news = await _service.GetByIdAsync(id);
 
         if (news == null)
         {

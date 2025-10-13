@@ -9,17 +9,17 @@ namespace WebNews.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IGenericService<News> _genericService;
+    private readonly NewsService _service;
 
-    public HomeController(IGenericService<News> genericService, ILogger<HomeController> logger)
+    public HomeController(NewsService service, ILogger<HomeController> logger)
     {
         _logger = logger;
-        _genericService = genericService;
+        _service = service;
     }
 
     public async Task<IActionResult> Index()
     {
-        var latestNew = await _genericService.GetLatestAsync(5);
+        var latestNew = await _service.GetLatestAsync(5);
         return View(latestNew);
     }
 

@@ -1,6 +1,7 @@
+using WebNews.Data.Repository.Interfaces;
 using WebNews.Models;
 
-namespace WebNews.Data.Repository.Interfaces;
+namespace WebNews.Data.Repository;
 
 public class NewsRepository : GenericRepository<News>, INewsRepository
 {
