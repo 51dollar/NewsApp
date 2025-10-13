@@ -1,28 +1,29 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebNews.Services;
 using WebNews.Helpers;
+using WebNews.Models;
 using WebNews.Models.ViewModels;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
 //[Authorize]
 public class AdminController : Controller
 {
-    private readonly INewsService _newsService;
+    private readonly INewsService _service;
     private readonly UploadFileToFolder _fileHelper;
     private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
 
-    public AdminController(INewsService newsService, UploadFileToFolder fileHelper)
+    public AdminController(INewsService service, UploadFileToFolder fileHelper)
     {
-        _newsService = newsService;
+        _service = service;
         _fileHelper = fileHelper;
     }
 
     public async Task<IActionResult> Index()
     {
-        var allNews = await _newsService.GetAllNewsAsync();
-        return View(allNews.OrderByDescending(n => n.DateTime));
+        var allNews = await _service.GetLatestAsync(100);
+        return View(allNews);
     }
 
     public IActionResult Create()
@@ -57,7 +58,7 @@ public class AdminController : Controller
 
             newsViewModel.News.Author = "Admin";
 
-            await _newsService.CreateNewsAsync(newsViewModel.News);
+            await _service.CreateAsync(newsViewModel.News);
             return RedirectToAction("Index");
         }
 
@@ -72,7 +73,7 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        var newsFromDb = await _newsService.GetNewsByIdAsync(id);
+        var newsFromDb = await _service.GetByIdAsync(id);
         if (newsFromDb == null)
         {
             return NotFound();
@@ -95,7 +96,7 @@ public class AdminController : Controller
             return View(newsViewModel);
         }
 
-        var existingNews = await _newsService.GetNewsByIdAsync(newsViewModel.News.Id);
+        var existingNews = await _service.GetByIdAsync(newsViewModel.News.Id);
         if (existingNews == null)
         {
             return NotFound();
@@ -112,13 +113,13 @@ public class AdminController : Controller
             existingNews.ImagePath = newImagePath;
         }
 
-        await _newsService.UpdateNewsAsync(existingNews);
+        await _service.UpdateAsync(existingNews);
         return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _newsService.DeleteNewsAsync(id);
+        await _service.DeleteAsync(id);
         return RedirectToAction("Index");
     }
 }

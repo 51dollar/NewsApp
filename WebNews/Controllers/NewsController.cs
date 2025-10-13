@@ -1,21 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using WebNews.Models;
 using WebNews.Services;
+using WebNews.Services.Interfaces;
 
 
 namespace WebNews.Controllers;
 
 public class NewsController : Controller
 {
-    private readonly INewsService _newsService;
+    private readonly IGenericService<News> _genericService;
 
-    public NewsController(INewsService newsService)
+    public NewsController(IGenericService<News> genericService)
     {
-        _newsService = newsService;
+        _genericService = genericService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var allNews = await _newsService.GetAllNewsAsync();
+        var allNews = await _genericService.GetAllAsync();
         return View(allNews);
     }
 
@@ -27,7 +29,7 @@ public class NewsController : Controller
             return NotFound();
         }
 
-        var news = await _newsService.GetNewsByIdAsync(id);
+        var news = await _genericService.GetByIdAsync(id);
 
         if (news == null)
         {

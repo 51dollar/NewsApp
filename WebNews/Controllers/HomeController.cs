@@ -2,23 +2,24 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Services;
 using WebNews.Models;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly INewsService _newsService;
+    private readonly IGenericService<News> _genericService;
 
-    public HomeController(INewsService newsService, ILogger<HomeController> logger)
+    public HomeController(IGenericService<News> genericService, ILogger<HomeController> logger)
     {
         _logger = logger;
-        _newsService = newsService;
+        _genericService = genericService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var latestNew = await _newsService.GetLatestNewsAsync(5);
+        var latestNew = await _genericService.GetLatestAsync(5);
         return View(latestNew);
     }
 
