@@ -5,12 +5,12 @@
     ViewData["Title"] = "Edit Post";
 }
 
-<div class="content-wrapper">
+<div class="content-wrapper mt-3">
     <div class="d-flex justify-content-center">
         <h2>@ViewData["Title"]</h2>
     </div>
 
-    <form asp-action="Edit" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-4">
+    <form asp-action="Edit" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-3">
         <div hidden>
             <label asp-for="News.Id" class="fs-4"></label>
             <input asp-for="News.Id" class="form-control"/>
