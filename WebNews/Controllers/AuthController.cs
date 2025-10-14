@@ -12,14 +12,14 @@ namespace WebNews.Controllers;
 public class AuthController : Controller
 {
     private readonly UserService _service;
-    private readonly JwtService _jwtService;
     private readonly Hasher<User> _hasher;
+    private readonly AuthHelper _authHelper;
 
-    public AuthController(UserService service, JwtService jwtService, Hasher<User> hasher)
+    public AuthController(UserService service, Hasher<User> hasher, AuthHelper authHelper)
     {
         _service = service;
-        _jwtService = jwtService;
         _hasher = hasher;
+        _authHelper = authHelper;
     }
 
     public IActionResult Register()
@@ -28,35 +28,37 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(UserViewModel userViewModel)
+    public async Task<IActionResult> Register(UserViewModel request)
     {
         if (!ModelState.IsValid)
         {
-            return View(userViewModel);
+            return View(request);
         }
 
-        var userFromDb = await _service.GetUserByEmailAsync(userViewModel.User.Email);
+        var userFromDb = await _service.GetUserByEmailAsync(request.User.Email);
 
-        if (userFromDb.Equals(userViewModel.User.Email))
+        if (userFromDb != null && userFromDb.Equals(request.User.Email))
         {
             ViewBag.Error = "Email already exists";
-            return View(userViewModel);
+            return View(request);
         }
 
-        userViewModel.User.PasswordHash = _hasher.HashPassword(
-            userViewModel.User,
-            userViewModel.User.PasswordHash
+        request.User.PasswordHash = _hasher.HashPassword(
+            request.User,
+            request.User.PasswordHash
         );
 
         User user = new User()
         {
-            Username = userViewModel.User.Username,
-            Email = userViewModel.User.Email,
-            PasswordHash = userViewModel.User.PasswordHash
+            Username = request.User.Username,
+            Email = request.User.Email,
+            PasswordHash = request.User.PasswordHash
         };
 
         await _service.CreateAsync(user);
-        return RedirectToAction("Home");
+        await _authHelper.SignInUserAsync(user);
+
+        return RedirectToAction("Index", "Home");
     }
 
     public IActionResult Login()
@@ -65,50 +67,44 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(UserViewModel userViewModel)
+    public async Task<IActionResult> Login(UserViewModel request)
     {
         if (ModelState.IsValid)
         {
-            var userFromDb = await _service.GetUserByEmailAsync(userViewModel.User.Email);
+            var userFromDb = await _service.GetUserByEmailAsync(request.User.Email);
             if (userFromDb == null)
             {
                 ViewBag.Error = "Email doesn't exist";
-                return View(userViewModel);
+                return View(request);
             }
 
-            userViewModel.User.PasswordHash = _hasher.HashPassword(
-                userViewModel.User,
-                userViewModel.User.PasswordHash
-            );
+            var isPasswordValid = _hasher.VerifyPassword(
+                request.User,
+                userFromDb.PasswordHash,
+                request.User.PasswordHash);
 
-            if (userViewModel.User.PasswordHash.Equals(userFromDb.PasswordHash))
+            if (!isPasswordValid)
             {
                 ViewBag.Error = "Passwords no match";
-                return View(userViewModel);
+                return View(request);
             }
 
-            var claims = new List<Claim>
+            User user = new User()
             {
-                new Claim(ClaimTypes.NameIdentifier, userViewModel.User.Id.ToString()),
-                new Claim(ClaimTypes.Email, userViewModel.User.Username),
-                new Claim(ClaimTypes.Name, userViewModel.User.Email),
-                new Claim(ClaimTypes.Role, userViewModel.User.Role),
+                Username = request.User.Username,
+                Email = request.User.Email,
+                PasswordHash = request.User.PasswordHash
             };
 
-            var claimsIdentity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
+            await _authHelper.SignInUserAsync(user);
         }
 
-        return RedirectToAction("Home");
+        return RedirectToAction("Index", "Home");
     }
 
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return RedirectToAction("Home");
+        await _authHelper.SignOutUserAsync();
+        return RedirectToAction("Index", "Home");
     }
 }

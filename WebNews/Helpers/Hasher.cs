@@ -15,4 +15,10 @@ public class Hasher<T> where T : class
     {
         return _passwordHasher.HashPassword(user, password);
     }
+
+    public bool VerifyPassword(T user, string passwordHash, string passwordRequest)
+    {
+        var result = _passwordHasher.VerifyHashedPassword(user, passwordHash, passwordRequest);
+        return result == PasswordVerificationResult.Success;
+    }
 }

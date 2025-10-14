@@ -1,30 +1,39 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using WebNews.Services;
 using WebNews.Data.Extensions;
 using WebNews.Data.UnitOfWork;
 using WebNews.Helpers;
+using WebNews.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatabase();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization()
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<NewsService>();
-builder.Services.AddScoped<NewsService>();
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UploadFileToFolder>();
+builder.Services.AddScoped<Hasher<User>>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuthHelper>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -32,6 +41,7 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
