@@ -1,6 +1,3 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Helpers;
 using WebNews.Models;
@@ -28,32 +25,32 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(UserViewModel request)
+    public async Task<IActionResult> Register(RegisterViewModel request)
     {
         if (!ModelState.IsValid)
         {
             return View(request);
         }
 
-        var userFromDb = await _service.GetUserByEmailAsync(request.User.Email);
+        var userFromDb = await _service.GetUserByEmailAsync(request.Email);
 
-        if (userFromDb != null && userFromDb.Equals(request.User.Email))
+        if (userFromDb != null && userFromDb.Email.Equals(request.Email))
         {
             ViewBag.Error = "Email already exists";
             return View(request);
         }
 
-        request.User.PasswordHash = _hasher.HashPassword(
-            request.User,
-            request.User.PasswordHash
-        );
-
         User user = new User()
         {
-            Username = request.User.Username,
-            Email = request.User.Email,
-            PasswordHash = request.User.PasswordHash
+            Username = request.Username,
+            Email = request.Email,
+            Role = RoleType.User,
         };
+
+        user.PasswordHash = _hasher.HashPassword(
+            user,
+            request.Password
+        );
 
         await _service.CreateAsync(user);
         await _authHelper.SignInUserAsync(user);
@@ -67,37 +64,33 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(UserViewModel request)
+    public async Task<IActionResult> Login(LoginViewModel request)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var userFromDb = await _service.GetUserByEmailAsync(request.User.Email);
-            if (userFromDb == null)
-            {
-                ViewBag.Error = "Email doesn't exist";
-                return View(request);
-            }
-
-            var isPasswordValid = _hasher.VerifyPassword(
-                request.User,
-                userFromDb.PasswordHash,
-                request.User.PasswordHash);
-
-            if (!isPasswordValid)
-            {
-                ViewBag.Error = "Passwords no match";
-                return View(request);
-            }
-
-            User user = new User()
-            {
-                Username = request.User.Username,
-                Email = request.User.Email,
-                PasswordHash = request.User.PasswordHash
-            };
-
-            await _authHelper.SignInUserAsync(user);
+            return View(request);
         }
+
+        var userFromDb = await _service.GetUserByEmailAsync(request.Email);
+
+        if (userFromDb == null)
+        {
+            ViewBag.Error = "User is not found";
+            return View(request);
+        }
+
+        var isPasswordValid = _hasher.VerifyPassword(
+            userFromDb,
+            userFromDb.PasswordHash,
+            request.Password);
+
+        if (!isPasswordValid)
+        {
+            ViewBag.Error = "Passwords no match";
+            return View(request);
+        }
+
+        await _authHelper.SignInUserAsync(userFromDb);
 
         return RedirectToAction("Index", "Home");
     }

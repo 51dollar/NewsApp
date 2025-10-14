@@ -2,7 +2,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Services;
 using WebNews.Models;
-using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 

@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Helpers;
-using WebNews.Models;
 using WebNews.Models.ViewModels;
 using WebNews.Services;
-using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
-//[Authorize]
+[Authorize(Roles = RoleType.Admin)]
 public class AdminController : Controller
 {
     private readonly NewsService _service;
@@ -20,7 +18,7 @@ public class AdminController : Controller
         _service = service;
         _fileHelper = fileHelper;
     }
-
+    
     public async Task<IActionResult> Index()
     {
         var allNews = await _service.GetLatestAsync(100);

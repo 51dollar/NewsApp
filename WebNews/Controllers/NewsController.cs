@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using WebNews.Models;
 using WebNews.Services;
-using WebNews.Services.Interfaces;
-
 
 namespace WebNews.Controllers;
 
