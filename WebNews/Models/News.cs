@@ -6,28 +6,22 @@ namespace WebNews.Models;
 public class News
 {
     public Guid Id { get; set; }
-
-    [Required(ErrorMessage = "Title is required")]
-    [MaxLength(400, ErrorMessage = "Title cannot be longer than 400 characters")]
     public string Title { get; set; }
 
-    [MaxLength(1000, ErrorMessage = "Subtitle cannot be longer than 1000 characters")]
     public string Subtitle { get; set; }
 
-    [Required(ErrorMessage = "Content is required")]
-    [MaxLength(5000, ErrorMessage = "Content cannot exceed 5000 characters")]
     public string Content { get; set; }
 
-    public string? ImagePath { get; set; }
+    public string ImagePath { get; set; }
 
-    public string? Author { get; set; } = string.Empty;
+    public string? Author { get; set; }
 
     [DataType(DataType.Date)]
     public DateTime DateTime { get; set; } = DateTime.UtcNow;
 
-    public Guid? UserId { get; set; } = Guid.Parse("5f5eef07-2cce-4bb1-ae61-7584cee5abc7");
+    public Guid UserId { get; set; }
 
-    public User? User { get; set; }
+    public User User { get; set; }
 
     [NotMapped]
     public DateTime PublishDateTime => DateTime.ToLocalTime();

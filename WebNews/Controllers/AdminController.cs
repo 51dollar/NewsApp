@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Helpers;
+using WebNews.Models;
 using WebNews.Models.ViewModels;
 using WebNews.Services;
 
@@ -18,7 +20,7 @@ public class AdminController : Controller
         _service = service;
         _fileHelper = fileHelper;
     }
-    
+
     public async Task<IActionResult> Index()
     {
         var allNews = await _service.GetLatestAsync(100);
@@ -31,84 +33,101 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(NewsViewModel newsViewModel)
+    [Authorize]
+    public async Task<IActionResult> Create(CreateViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            if (newsViewModel.Image != null)
-            {
-                var inputFileExtension =
-                    Path.GetExtension(newsViewModel.Image.FileName).ToLower();
-                bool isAllowed = _allowedExtension.Contains(inputFileExtension);
-
-                if (!isAllowed)
-                {
-                    ModelState.AddModelError(string.Empty,
-                        "Invalid file extension. Allowed format are .jpg, .jpeg, .png");
-                    return View(newsViewModel);
-                }
-
-                newsViewModel.News.ImagePath = await _fileHelper.uploadFileAsync(newsViewModel.Image);
-            }
-            else
-            {
-                newsViewModel.News.ImagePath = "/Image/default.png";
-            }
-
-            newsViewModel.News.Author = "Admin";
-
-            await _service.CreateAsync(newsViewModel.News);
-            return RedirectToAction("Index");
+            return View(model);
         }
 
-        return View(newsViewModel);
+        string imagePath;
+
+        if (model.Image != null)
+        {
+            var inputFileExtension = Path.GetExtension(model.Image.FileName).ToLower();
+            bool isAllowed = _allowedExtension.Contains(inputFileExtension);
+
+            if (!isAllowed)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Invalid file extension. Allowed format are .jpg, .jpeg, .png");
+                return View(model);
+            }
+
+            imagePath = await _fileHelper.UploadFileAsync(model.Image);
+        }
+        else
+        {
+            imagePath = "/Image/default.png";
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var username = User.FindFirstValue(ClaimTypes.Name);
+
+        News news = new News()
+        {
+            Title = model.Title,
+            Subtitle = model.Subtitle,
+            Content = model.Content,
+            ImagePath = imagePath,
+            UserId = Guid.Parse(userId),
+            Author = username
+        };
+
+        await _service.CreateAsync(news);
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
         var newsFromDb = await _service.GetByIdAsync(id);
         if (newsFromDb == null)
         {
             return NotFound();
         }
 
-        NewsViewModel newsViewModel = new NewsViewModel
+        EditViewModel editViewModel = new EditViewModel
         {
-            News = newsFromDb
+            Id = newsFromDb.Id,
+            Title = newsFromDb.Title,
+            Subtitle = newsFromDb.Subtitle,
+            Content = newsFromDb.Content,
+            Image = newsFromDb.ImagePath
         };
 
-        return View(newsViewModel);
+        return View(editViewModel);
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(NewsViewModel newsViewModel)
+    [Authorize]
+    public async Task<IActionResult> Edit(EditViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return View(newsViewModel);
+            return View(model);
         }
 
-        var existingNews = await _service.GetByIdAsync(newsViewModel.News.Id);
+        var existingNews = await _service.GetByIdAsync(model.Id);
         if (existingNews == null)
         {
             return NotFound();
         }
 
-        existingNews.Title = newsViewModel.News.Title;
-        existingNews.Subtitle = newsViewModel.News.Subtitle;
-        existingNews.Content = newsViewModel.News.Content;
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var username = User.FindFirstValue(ClaimTypes.Name);
+        
+        existingNews.Title = model.Title;
+        existingNews.Subtitle = model.Subtitle;
+        existingNews.Content = model.Content;
         existingNews.DateTime = DateTime.UtcNow;
+        existingNews.UserId = Guid.Parse(userId);
+        existingNews.Author = username;
 
-        if (newsViewModel.Image != null)
+        if (model.ImageFile != null)
         {
-            var newImagePath = await _fileHelper.uploadFileAsync(newsViewModel.Image);
+            var newImagePath = await _fileHelper.UploadFileAsync(model.ImageFile);
             existingNews.ImagePath = newImagePath;
         }
 

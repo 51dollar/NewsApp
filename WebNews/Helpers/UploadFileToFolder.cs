@@ -9,7 +9,7 @@ public class UploadFileToFolder
         _webHost = webHost;
     }
 
-    public async Task<string> uploadFileAsync(IFormFile file)
+    public async Task<string> UploadFileAsync(IFormFile file)
     {
         if (file == null || file.Length == 0)
             return "";
