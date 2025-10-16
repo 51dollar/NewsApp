@@ -25,31 +25,31 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel request)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return View(request);
+            return View(model);
         }
 
-        var userFromDb = await _service.GetUserByEmailAsync(request.Email);
+        var userFromDb = await _service.GetUserByEmailAsync(model.Email);
 
-        if (userFromDb != null && userFromDb.Email.Equals(request.Email))
+        if (userFromDb != null && userFromDb.Email.Equals(model.Email))
         {
             ViewBag.Error = "Email already exists";
-            return View(request);
+            return View(model);
         }
 
         User user = new User()
         {
-            Username = request.Username,
-            Email = request.Email,
+            Username = model.Username,
+            Email = model.Email,
             Role = RoleType.User,
         };
 
         user.PasswordHash = _hasher.HashPassword(
             user,
-            request.Password
+            model.Password
         );
 
         await _service.CreateAsync(user);
@@ -64,30 +64,30 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel request)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return View(request);
+            return View(model);
         }
 
-        var userFromDb = await _service.GetUserByEmailAsync(request.Email);
+        var userFromDb = await _service.GetUserByEmailAsync(model.Email);
 
         if (userFromDb == null)
         {
             ViewBag.Error = "User is not found";
-            return View(request);
+            return View(model);
         }
 
         var isPasswordValid = _hasher.VerifyPassword(
             userFromDb,
             userFromDb.PasswordHash,
-            request.Password);
+            model.Password);
 
         if (!isPasswordValid)
         {
             ViewBag.Error = "Passwords no match";
-            return View(request);
+            return View(model);
         }
 
         await _authHelper.SignInUserAsync(userFromDb);

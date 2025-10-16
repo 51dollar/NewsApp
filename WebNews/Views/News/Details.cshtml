@@ -1,18 +1,23 @@
 @model News
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = "Read News";
 }
 
-<div class="content-wrapper">
-    <h1 class="text-center">@Model.Title</h1>
-    <p>
-        <span class="badge bg-primary">By:</span>
-        @Model.Author |
-        <span class="badge bg-primary">Published on</span>
-        @Model.PublishDateTime.ToString("dd MMMM yyyy")
-    </p>
-    <img src="@Model.ImagePath" alt="@Model.Title" class="feature-image"/>
-    <hr/>
-    <div>@Html.Raw(Model.Content)</div>
+<div class="content-wrapper container">
+    <div class="row justify-content-center shadow-lg rounded-5">
+        <div class="card bg-light p-4">
+            <h1 class="text-center">@Model.Title</h1>
+            <h5 class="text-center">@Model.Subtitle</h5>
+            <p>
+            <span class="badge bg-primary">By:</span>
+            @Model.Author |
+            <span class="badge bg-primary">Published on</span>
+            @Model.PublishDateTime.ToString("dd MMMM yyyy")
+        </p>
+        <img src="@Model.ImagePath" alt="@Model.Title" class="feature-image"/>
+        <hr/>
+        <div>@Html.Raw(Model.Content)</div>
+        </div>
+    </div>
 </div>

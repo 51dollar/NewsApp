@@ -18,7 +18,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var latestNew = await _service.GetLatestAsync(5);
+        var latestNew = await _service.GetLatestAsync(6);
         return View(latestNew);
     }
 
