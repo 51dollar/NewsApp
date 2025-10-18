@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace WebNews.Helpers;
+namespace WebNews.Helpers.UI;
 
 public static class HtmlTagHelper
 {

@@ -1,4 +1,4 @@
-using WebNews.Models;
+using WebNews.Models.Entities;
 
 namespace WebNews.Services.Interfaces;
 

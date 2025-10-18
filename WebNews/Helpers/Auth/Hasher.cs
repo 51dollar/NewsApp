@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace WebNews.Helpers;
+namespace WebNews.Helpers.Auth;
 
 public class Hasher<T> where T : class
 {

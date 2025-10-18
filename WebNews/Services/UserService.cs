@@ -1,5 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using WebNews.Data.UnitOfWork;
-using WebNews.Models;
+using WebNews.Models.Entities;
 using WebNews.Services.Interfaces;
 
 namespace WebNews.Services;

@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using WebNews.Services;
 using WebNews.Data.Extensions;
 using WebNews.Data.UnitOfWork;
-using WebNews.Helpers;
-using WebNews.Models;
+using WebNews.Helpers.Auth;
+using WebNews.Helpers.Image;
+using WebNews.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<NewsService>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<UploadFileToFolder>();
+builder.Services.AddScoped<ImageHelper>();
 builder.Services.AddScoped<Hasher<User>>();
 
 builder.Services.AddHttpContextAccessor();

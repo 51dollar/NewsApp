@@ -1,4 +1,3 @@
-using WebNews.Data.Repository;
 using WebNews.Data.Repository.Interfaces;
 using WebNews.Models;
 

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebNews.Helpers;
 
-namespace WebNews.Models;
+namespace WebNews.Models.Entities;
 
 public class User
 {

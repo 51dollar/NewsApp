@@ -1,4 +1,4 @@
-namespace WebNews.Helpers;
+namespace WebNews.Helpers.Image;
 
 public class UploadFileToFolder
 {

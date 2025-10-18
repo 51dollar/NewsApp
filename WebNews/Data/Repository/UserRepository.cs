@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebNews.Data.Repository.Interfaces;
-using WebNews.Models;
+using WebNews.Models.Entities;
 
 namespace WebNews.Data.Repository;
 

@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebNews.Helpers;
-using WebNews.Models;
-using WebNews.Models.ViewModels;
+using WebNews.Helpers.Auth;
+using WebNews.Helpers.Image;
+using WebNews.Models.Entities;
+using WebNews.Models.ViewModels.Admin;
+using WebNews.Models.ViewModels.News;
 using WebNews.Services;
 
 namespace WebNews.Controllers;

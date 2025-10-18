@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Helpers;
+using WebNews.Helpers.Auth;
 using WebNews.Models;
+using WebNews.Models.Entities;
 using WebNews.Models.ViewModels;
+using WebNews.Models.ViewModels.Auth;
 using WebNews.Services;
 
 namespace WebNews.Controllers;
@@ -29,6 +32,7 @@ public class AuthController : Controller
     {
         if (!ModelState.IsValid)
         {
+            ViewBag.Error = "Date in not valid";
             return View(model);
         }
 
@@ -68,11 +72,11 @@ public class AuthController : Controller
     {
         if (!ModelState.IsValid)
         {
+            ViewBag.Error = "Date in not valid.";
             return View(model);
         }
 
         var userFromDb = await _service.GetUserByEmailAsync(model.Email);
-
         if (userFromDb == null)
         {
             ViewBag.Error = "User is not found";

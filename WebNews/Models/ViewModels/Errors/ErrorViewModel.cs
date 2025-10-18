@@ -1,4 +1,4 @@
-namespace WebNews.Models;
+namespace WebNews.Models.ViewModels.Errors;
 
 public class ErrorViewModel
 {

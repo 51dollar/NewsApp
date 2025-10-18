@@ -1,4 +1,4 @@
-namespace WebNews.Helpers;
+namespace WebNews.Helpers.Auth;
 
 public static class RoleType
 {

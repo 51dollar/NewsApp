@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebNews.Data.Configuration;
-using WebNews.Models;
+using WebNews.Models.Entities;
 
 namespace WebNews.Data;
 
