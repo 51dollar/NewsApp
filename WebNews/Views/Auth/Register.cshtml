@@ -34,6 +34,12 @@
                                placeholder="Enter your password"/>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control rounded-3" placeholder="Confirm your password"/>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
 
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary rounded-3">Register</button>

@@ -15,7 +15,7 @@
             <span class="badge bg-primary">Published on</span>
             @Model.PublishDateTime.ToString("dd MMMM yyyy")
         </p>
-        <img src="@Model.ImagePath" alt="@Model.Title" class="feature-image"/>
+        <img src="@Model.ImagePath" alt="@Model.Title" class="feature-image rounded-3"/>
         <hr/>
         <div>@Html.Raw(Model.Content)</div>
         </div>

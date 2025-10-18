@@ -6,6 +6,12 @@
 
 <div class="content-wrapper mt-2">
     <form asp-action="Create" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-2">
+        
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger rounded-3">@ViewBag.Error</div>
+        }
+        
         <div>
             <label asp-for="Title" class="fs-4"></label>
             <input asp-for="Title" class="form-control rounded-3"/>
