@@ -2,6 +2,7 @@ namespace WebNews.Data.Repository.Interfaces;
 
 public interface IGenericRepository<T> where T : class
 {
+    IQueryable<T> GetAll();
     Task<IEnumerable<T>> GetAllAsync();
     Task<T?> GetByIdAsync(Guid id);
     Task AddAsync(T entity);

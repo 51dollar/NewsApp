@@ -13,6 +13,10 @@ public class NewsService : INewsService
     {
         _unitOfWork = unitOfWork;
     }
+    public IQueryable<News> GetAll()
+    {
+        return _unitOfWork.NewsRepository.GetAll();
+    }
 
     public async Task<IEnumerable<News>> GetAllAsync()
     {
@@ -23,15 +27,13 @@ public class NewsService : INewsService
     {
         return await _unitOfWork.NewsRepository.GetByIdAsync(id);
     }
-
-    public async Task<IEnumerable<News>> GetLatestAsync(int count)
+    
+    public async Task<IEnumerable<News>> GetLatestAsync(byte count)
     {
-        var allNews = await GetAllAsync();
-        var latestNews = allNews
-            .OrderByDescending(n => n.DateTime)
-            .Take(count);
-
-        return latestNews;
+        return await GetAll()
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .Take(count)
+            .ToListAsync();
     }
 
     public async Task CreateAsync(News news)

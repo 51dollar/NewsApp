@@ -2,8 +2,9 @@ namespace WebNews.Services.Interfaces;
 
 public interface IGenericService<T>
 {
-    Task<IEnumerable<T>> GetLatestAsync(int count);
+    IQueryable<T> GetAll();
     Task<IEnumerable<T>> GetAllAsync();
+    Task<IEnumerable<T>> GetLatestAsync(byte count);
     Task<T?> GetByIdAsync(Guid id);
     Task CreateAsync(T entity);
     Task UpdateAsync(T entity);

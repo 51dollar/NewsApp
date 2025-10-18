@@ -14,19 +14,22 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
     }
 
+    public IQueryable<User> GetAll()
+    {
+        return _unitOfWork.UserRepository.GetAll();
+    }
+
     public async Task<IEnumerable<User>> GetAllAsync()
     {
         return await _unitOfWork.UserRepository.GetAllAsync();
     }
 
-    public async Task<IEnumerable<User>> GetLatestAsync(int count)
+    public async Task<IEnumerable<User>> GetLatestAsync(byte count)
     {
-        var allUsers = await GetAllAsync();
-        var latestUsers = allUsers
-            .OrderByDescending(n => n.DateCreate)
-            .Take(count);
-
-        return latestUsers;
+        return await GetAll()
+            .OrderByDescending(u => u.DateCreate)
+            .Take(count)
+            .ToListAsync();
     }
 
     public async Task<User?> GetByIdAsync(Guid id)
