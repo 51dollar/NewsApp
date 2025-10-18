@@ -31,7 +31,7 @@ public class NewsConfiguration : IEntityTypeConfiguration<News>
             .IsRequired(false)
             .HasMaxLength(100);
 
-        builder.Property(x => x.DateTime)
+        builder.Property(x => x.CreatedAtUtc)
             .HasColumnType("date");
     }
 }
