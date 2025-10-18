@@ -1,5 +1,4 @@
 using WebNews.Data.Repository.Interfaces;
-using WebNews.Models;
 
 namespace WebNews.Data.UnitOfWork;
 

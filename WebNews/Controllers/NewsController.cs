@@ -19,18 +19,17 @@ public class NewsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(Guid id)
+    public async Task<IActionResult> Details(Guid? id)
     {
-        if (id == null)
+        if (id == null || id == Guid.Empty)
         {
-            return NotFound();
+            return NotFound("Id news is not found");
         }
 
-        var news = await _service.GetByIdAsync(id);
-
+        var news = await _service.GetByIdAsync(id.Value);
         if (news == null)
         {
-            return NotFound();
+            return NotFound("News from db is not found");
         }
 
         return View(news);

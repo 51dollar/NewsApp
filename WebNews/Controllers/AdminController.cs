@@ -13,33 +13,51 @@ namespace WebNews.Controllers;
 [Authorize(Roles = RoleType.Admin)]
 public class AdminController : Controller
 {
-    private readonly NewsService _service;
-    private readonly UploadFileToFolder _fileHelper;
+    private readonly NewsService _newsService;
+    private readonly UserService _userService;
+    private readonly ImageHelper _imageHelper;
     private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
 
-    public AdminController(NewsService service, UploadFileToFolder fileHelper)
+    public AdminController(NewsService newsService, ImageHelper imageHelper, UserService userService)
     {
-        _service = service;
-        _fileHelper = fileHelper;
+        _newsService = newsService;
+        _imageHelper = imageHelper;
+        _userService = userService;
     }
-
+    
+    [HttpGet]
+    [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Index()
     {
-        var allNews = await _service.GetLatestAsync(100);
-        return View(allNews);
-    }
+        const byte countNews = 10;
+        const byte countUsers = 10;
+        
+        var allNews = await _newsService.GetLatestAsync(countNews);
+        var allUsers = await _userService.GetLatestAsync(countUsers);
 
+        var model = new AdminDashboardViewModel
+        {
+            NewsItems = allNews,
+            Users = allUsers,
+        };
+        
+        return View(model);
+    }
+    
+    [HttpGet]
+    [Authorize(Roles = RoleType.Admin)]
     public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Create(CreateViewModel model)
     {
         if (!ModelState.IsValid)
         {
+            ViewBag.Error = "Date in not valid";
             return View(model);
         }
 
@@ -47,8 +65,8 @@ public class AdminController : Controller
 
         if (model.Image != null)
         {
-            var inputFileExtension = Path.GetExtension(model.Image.FileName).ToLower();
-            bool isAllowed = _allowedExtension.Contains(inputFileExtension);
+            var inputFile = Path.GetExtension(model.Image.FileName).ToLower();
+            bool isAllowed = _allowedExtension.Contains(inputFile);
 
             if (!isAllowed)
             {
@@ -57,7 +75,7 @@ public class AdminController : Controller
                 return View(model);
             }
 
-            imagePath = await _fileHelper.UploadFileAsync(model.Image);
+            imagePath = await _imageHelper.UploadFileAsync(model.Image);
         }
         else
         {
@@ -67,6 +85,12 @@ public class AdminController : Controller
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var username = User.FindFirstValue(ClaimTypes.Name);
 
+        if (userId == null || username == null)
+        {
+            ViewBag.Error = "User is not registered";
+            return View(model);
+        }
+        
         News news = new News()
         {
             Title = model.Title,
@@ -77,17 +101,23 @@ public class AdminController : Controller
             Author = username
         };
 
-        await _service.CreateAsync(news);
+        await _newsService.CreateAsync(news);
         return RedirectToAction("Index");
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit(Guid id)
+    [Authorize(Roles = RoleType.Admin)]
+    public async Task<IActionResult> Edit(Guid? id)
     {
-        var newsFromDb = await _service.GetByIdAsync(id);
+        if (id == null || id == Guid.Empty)
+        {
+            return NotFound("Id news is not found");
+        }
+        
+        var newsFromDb = await _newsService.GetByIdAsync(id.Value);
         if (newsFromDb == null)
         {
-            return NotFound();
+            return NotFound("News from db is not found");
         }
 
         EditViewModel editViewModel = new EditViewModel
@@ -103,29 +133,36 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Edit(EditViewModel model)
     {
         if (!ModelState.IsValid)
         {
+            ViewBag.Error = "Date in not valid.";
             return View(model);
         }
 
-        var existingNews = await _service.GetByIdAsync(model.Id);
-        if (existingNews == null)
+        var newsFormDb = await _newsService.GetByIdAsync(model.Id);
+        if (newsFormDb == null)
         {
-            return NotFound();
+            return NotFound("News from db is not found");
         }
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var username = User.FindFirstValue(ClaimTypes.Name);
+
+        if (userId == null || username == null)
+        {
+            ViewBag.Error = "User is not registered";
+            return View(model);
+        }
         
-        existingNews.Title = model.Title;
-        existingNews.Subtitle = model.Subtitle;
-        existingNews.Content = model.Content;
-        existingNews.DateTime = DateTime.UtcNow;
-        existingNews.UserId = Guid.Parse(userId);
-        existingNews.Author = username;
+        newsFormDb.Title = model.Title;
+        newsFormDb.Subtitle = model.Subtitle;
+        newsFormDb.Content = model.Content;
+        newsFormDb.CreatedAtUtc = DateTime.UtcNow;
+        newsFormDb.UserId = Guid.Parse(userId);
+        newsFormDb.Author = username;
 
         if (model.ImageFile != null)
         {
@@ -133,13 +170,13 @@ public class AdminController : Controller
             existingNews.ImagePath = newImagePath;
         }
 
-        await _service.UpdateAsync(existingNews);
+        await _newsService.UpdateAsync(newsFormDb);
         return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _service.DeleteAsync(id);
+        await _newsService.DeleteAsync(id);
         return RedirectToAction("Index");
     }
 }
