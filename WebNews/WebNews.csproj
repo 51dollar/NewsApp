@@ -28,8 +28,4 @@
         </Content>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="wwwroot\Image\default.png"/>
-    </ItemGroup>
-
 </Project>

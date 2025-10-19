@@ -23,9 +23,9 @@ public class EditViewModel
     public string Content { get; set; } = string.Empty;
 
     [Display(Name = "Current Image Path")]
-    public string? Image { get; set; }
+    public string? ImageNews { get; set; }
 
     [Display(Name = "Upload New Image")]
     [DataType(DataType.Upload)]
-    public IFormFile? ImageFile { get; set; }
+    public IFormFile? InputImage { get; set; }
 }

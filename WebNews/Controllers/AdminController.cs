@@ -16,7 +16,6 @@ public class AdminController : Controller
     private readonly NewsService _newsService;
     private readonly UserService _userService;
     private readonly ImageHelper _imageHelper;
-    private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
 
     public AdminController(NewsService newsService, ImageHelper imageHelper, UserService userService)
     {
@@ -24,14 +23,14 @@ public class AdminController : Controller
         _imageHelper = imageHelper;
         _userService = userService;
     }
-    
+
     [HttpGet]
     [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Index()
     {
         const byte countNews = 10;
         const byte countUsers = 10;
-        
+
         var allNews = await _newsService.GetLatestAsync(countNews);
         var allUsers = await _userService.GetLatestAsync(countUsers);
 
@@ -40,10 +39,10 @@ public class AdminController : Controller
             NewsItems = allNews,
             Users = allUsers,
         };
-        
+
         return View(model);
     }
-    
+
     [HttpGet]
     [Authorize(Roles = RoleType.Admin)]
     public IActionResult Create()
@@ -65,10 +64,7 @@ public class AdminController : Controller
 
         if (model.Image != null)
         {
-            var inputFile = Path.GetExtension(model.Image.FileName).ToLower();
-            bool isAllowed = _allowedExtension.Contains(inputFile);
-
-            if (!isAllowed)
+            if (_imageHelper.ValidFileExtension(model.Image))
             {
                 ModelState.AddModelError(string.Empty,
                     "Invalid file extension. Allowed format are .jpg, .jpeg, .png");
@@ -82,23 +78,23 @@ public class AdminController : Controller
             imagePath = "/Image/default.png";
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var username = User.FindFirstValue(ClaimTypes.Name);
+        var userIdFromCookie = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var usernameFromCookie = User.FindFirstValue(ClaimTypes.Name);
 
-        if (userId == null || username == null)
+        if (userIdFromCookie == null || usernameFromCookie == null)
         {
             ViewBag.Error = "User is not registered";
             return View(model);
         }
-        
+
         News news = new News()
         {
             Title = model.Title,
             Subtitle = model.Subtitle,
             Content = model.Content,
             ImagePath = imagePath,
-            UserId = Guid.Parse(userId),
-            Author = username
+            UserId = Guid.Parse(userIdFromCookie),
+            Author = usernameFromCookie
         };
 
         await _newsService.CreateAsync(news);
@@ -113,7 +109,7 @@ public class AdminController : Controller
         {
             return NotFound("Id news is not found");
         }
-        
+
         var newsFromDb = await _newsService.GetByIdAsync(id.Value);
         if (newsFromDb == null)
         {
@@ -126,7 +122,7 @@ public class AdminController : Controller
             Title = newsFromDb.Title,
             Subtitle = newsFromDb.Subtitle,
             Content = newsFromDb.Content,
-            Image = newsFromDb.ImagePath
+            ImageNews = newsFromDb.ImagePath
         };
 
         return View(editViewModel);
@@ -142,35 +138,40 @@ public class AdminController : Controller
             return View(model);
         }
 
-        var newsFormDb = await _newsService.GetByIdAsync(model.Id);
-        if (newsFormDb == null)
+        var newsFromDb = await _newsService.GetByIdAsync(model.Id);
+        if (newsFromDb == null)
         {
             return NotFound("News from db is not found");
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var username = User.FindFirstValue(ClaimTypes.Name);
+        var userIdFromCookie = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var usernameFromCookie = User.FindFirstValue(ClaimTypes.Name);
 
-        if (userId == null || username == null)
+        if (userIdFromCookie == null || usernameFromCookie == null)
         {
             ViewBag.Error = "User is not registered";
             return View(model);
         }
-        
-        newsFormDb.Title = model.Title;
-        newsFormDb.Subtitle = model.Subtitle;
-        newsFormDb.Content = model.Content;
-        newsFormDb.CreatedAtUtc = DateTime.UtcNow;
-        newsFormDb.UserId = Guid.Parse(userId);
-        newsFormDb.Author = username;
 
-        if (model.ImageFile != null)
+        newsFromDb.Title = model.Title;
+        newsFromDb.Subtitle = model.Subtitle;
+        newsFromDb.Content = model.Content;
+        newsFromDb.CreatedAtUtc = DateTime.UtcNow;
+        newsFromDb.UserId = Guid.Parse(userIdFromCookie);
+        newsFromDb.Author = usernameFromCookie;
+
+        if (model.InputImage != null)
         {
-            var newImagePath = await _fileHelper.UploadFileAsync(model.ImageFile);
-            existingNews.ImagePath = newImagePath;
+            if (model.ImageNews != null && model.ImageNews != "/Image/default.png") 
+            {
+                _imageHelper.DeleteFile(model.ImageNews);
+            }
+
+            var newUrlImage = await _imageHelper.UploadFileAsync(model.InputImage);
+            newsFromDb.ImagePath = newUrlImage;
         }
 
-        await _newsService.UpdateAsync(newsFormDb);
+        await _newsService.UpdateAsync(newsFromDb);
         return RedirectToAction("Index");
     }
 

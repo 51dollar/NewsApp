@@ -29,14 +29,15 @@
             <span asp-validation-for="Content" class="text-danger"></span>
         </div>
         <div class="mt-2">
-            <label asp-for="Image" class="fs-4"></label>
+            <label asp-for="ImageNews" class="fs-4"></label>
+            <input type="hidden" asp-for="ImageNews" value="@Model.ImageNews" />
             <div class="d-flex justify-content-center align-items-center">
-                <img src="@Model.Image" alt="Image" class="feature-image rounded-3"/>
+                <img src="@Model.ImageNews" alt="Image" class="feature-image rounded-3"/>
             </div>
         </div>
         <div class="mt-2">
-            <label asp-for="ImageFile" class="fs-4">New Image</label>
-            <input asp-for="ImageFile" type="file" class="form-control rounded-3"/>
+            <label asp-for="InputImage" class="fs-4">New Image</label>
+            <input asp-for="InputImage" type="file" class="form-control rounded-3"/>
         </div>
         <div class="d-flex justify-content-center gap-2 mt-4">
             <button type="submit" class="btn btn-primary mt-1">Edit News</button>

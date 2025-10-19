@@ -1,21 +1,19 @@
 namespace WebNews.Helpers.Image;
 
-public class UploadFileToFolder
+public class ImageHelper
 {
     private readonly IWebHostEnvironment _webHost;
+    private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
 
-    public UploadFileToFolder(IWebHostEnvironment webHost)
+    public ImageHelper(IWebHostEnvironment webHost)
     {
         _webHost = webHost;
     }
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
-        if (file == null || file.Length == 0)
-            return "";
-
         var inputFileExtension = Path.GetExtension(file.FileName);
-        var fileName = Guid.NewGuid().ToString() + inputFileExtension;
+        var fileName = Guid.NewGuid() + inputFileExtension;
         var filePath = Path.Combine(_webHost.WebRootPath, "Image", fileName);
 
         try
@@ -31,5 +29,30 @@ public class UploadFileToFolder
         }
 
         return $"/Image/{fileName}";
+    }
+
+    public void DeleteFile(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName) || fileName == "/Image/default.png")
+        {
+            return;
+        }
+        
+        string cleanPath = fileName.TrimStart('/','\\');
+        
+        string filePath = Path.Combine(_webHost.WebRootPath, cleanPath);
+        
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    public bool ValidFileExtension(IFormFile file)
+    {
+        var inputFile = Path.GetExtension(file.FileName).ToLower();
+        bool isAllowed = _allowedExtension.Contains(inputFile);
+
+        return isAllowed;
     }
 }
