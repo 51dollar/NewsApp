@@ -24,7 +24,7 @@ public class UserService : IUserService
         return await _unitOfWork.UserRepository.GetAllAsync();
     }
 
-    public async Task<IEnumerable<User>> GetLatestAsync(byte count)
+    public async Task<IEnumerable<User>> GetLatestAsync(int count)
     {
         return await GetAll()
             .OrderByDescending(u => u.DateCreate)

@@ -92,7 +92,6 @@ public class AuthController : Controller
         }
 
         await _authHelper.SignInUserAsync(userFromDb);
-
         return RedirectToAction("Index", "Home");
     }
 

@@ -3,6 +3,7 @@ using WebNews.Services;
 using WebNews.Data.Extensions;
 using WebNews.Data.UnitOfWork;
 using WebNews.Helpers.Auth;
+using WebNews.Helpers.AutoMapper.MappingProfiles;
 using WebNews.Helpers.Image;
 using WebNews.Models.Entities;
 
@@ -19,6 +20,7 @@ builder.Services.AddScoped<NewsService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageHelper>();
 builder.Services.AddScoped<Hasher<User>>();
+builder.Services.AddAutoMapper(cfg => { }, typeof(NewsProfile), typeof(UserProfile));
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuthHelper>();

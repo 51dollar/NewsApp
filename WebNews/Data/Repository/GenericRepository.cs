@@ -14,7 +14,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public IQueryable<T> GetAll()
     {
-        return _context.Set<T>();
+        return _context.Set<T>().AsNoTracking();
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()

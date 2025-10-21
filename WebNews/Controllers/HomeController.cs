@@ -16,10 +16,8 @@ public class HomeController : Controller
         _service = service;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int countNews = 6)
     {
-        const byte countNews = 6;
-        
         var latestNew = await _service.GetLatestAsync(countNews);
         return View(latestNew);
     }
