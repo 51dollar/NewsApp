@@ -3,7 +3,7 @@ using WebNews.Data.Repository.Interfaces;
 
 namespace WebNews.Data.Repository;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : class
+public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     protected readonly AppDbContext _context;
 
@@ -12,32 +12,32 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
     }
 
-    public IQueryable<T> GetAll()
+    public virtual IQueryable<T> GetAll()
     {
         return _context.Set<T>().AsNoTracking();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _context.Set<T>().ToListAsync();
+        return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(Guid id)
+    public virtual async Task<T?> GetByIdAsync(Guid id)
     {
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public async Task AddAsync(T entity)
+    public virtual async Task AddAsync(T entity)
     {
         await _context.Set<T>().AddAsync(entity);
     }
 
-    public void Update(T entity)
+    public virtual void Update(T entity)
     {
         _context.Set<T>().Update(entity);
     }
 
-    public void Delete(T entity)
+    public virtual void Delete(T entity)
     {
         _context.Set<T>().Remove(entity);
     }
