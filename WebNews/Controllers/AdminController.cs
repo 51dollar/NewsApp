@@ -113,7 +113,7 @@ public class AdminController : Controller
             return View(model);
         }
 
-        _newsService.UpdateModelAsync(model, userIdFromCookie, usernameFromCookie);
+        await _newsService.UpdateModelAsync(model, userIdFromCookie, usernameFromCookie);
         return RedirectToAction("Index");
     }
 

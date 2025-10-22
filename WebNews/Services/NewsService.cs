@@ -46,7 +46,7 @@ public class NewsService : INewsService
         return _mapper.Map<EditViewModel>(model);
     }
 
-    public async void UpdateModelAsync(EditViewModel model, string userId, string username)
+    public async Task UpdateModelAsync(EditViewModel model, string userId, string username)
     {
         var modelDb = await _unitOfWork.NewsRepository.GetByIdAsync(model.Id);
         if (modelDb == null)
