@@ -36,10 +36,10 @@
             
             <ul class="navbar-nav ms-auto">
                 <div class="d-flex ms-auto">
-                    @if (User.Identity.IsAuthenticated)
+                    @if (User?.Identity is { IsAuthenticated: true })
                     {
                         <li class="nav-item">
-                            <span class="nav-link">Hello, @User.Identity.Name</span>
+                            <a class="nav-link" href="/Account">Hello, @User.Identity.Name</a>
                         </li>
                     }
                     @if (!User.Identity.IsAuthenticated)

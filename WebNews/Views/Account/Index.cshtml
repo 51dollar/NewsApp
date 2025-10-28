@@ -1,0 +1,15 @@
+@model WebNews.Models.Entities.User
+
+@{
+    ViewData["Title"] = "User Account";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card p-3 mt-3">
+    <h4>@Model.Username</h4>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Date Create</strong> @Model.PublishDateCreate.ToString("dd.MM.yyyy")</p>
+</div>
+
+<a class="btn btn-secondary mt-3" asp-controller="Home" asp-action="Index">back</a>
