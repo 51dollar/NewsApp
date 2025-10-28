@@ -4,20 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 using WebNews.Helpers.Auth;
 using WebNews.Models.ViewModels.Admin;
 using WebNews.Models.ViewModels.News;
-using WebNews.Services;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
 [Authorize(Roles = RoleType.Admin)]
 public class AdminController : Controller
 {
-    private readonly NewsService _newsService;
-    private readonly UserService _userService;
+    private readonly INewsService _newsService;
+    private readonly IUserService _userService;
 
-    public AdminController(NewsService newsService, UserService userService)
+    public AdminController(IServiceManager newsService, IServiceManager userService)
     {
-        _newsService = newsService;
-        _userService = userService;
+        _newsService = newsService.NewsService;
+        _userService = userService.UserService;
     }
 
     [HttpGet]
@@ -64,7 +64,7 @@ public class AdminController : Controller
 
         try
         {
-            await _newsService.CreateAsync(model, userIdFromCookie, usernameFromCookie);
+            await _newsService.CreateNewsAsync(model, userIdFromCookie, usernameFromCookie);
             return RedirectToAction("Index");
         }
         catch (Exception ex)
@@ -113,7 +113,7 @@ public class AdminController : Controller
             return View(model);
         }
 
-        await _newsService.UpdateModelAsync(model, userIdFromCookie, usernameFromCookie);
+        await _newsService.UpdateNewsAsync(model, userIdFromCookie, usernameFromCookie);
         return RedirectToAction("Index");
     }
 

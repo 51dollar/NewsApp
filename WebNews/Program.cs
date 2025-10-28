@@ -5,6 +5,7 @@ using WebNews.Data.UnitOfWork;
 using WebNews.Helpers.Auth;
 using WebNews.Helpers.AutoMapper.MappingProfiles;
 using WebNews.Helpers.Image;
+using WebNews.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,15 +15,16 @@ builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization()
     .AddRazorRuntimeCompilation();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<NewsService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<ImageHelper>();
-builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<Hasher>();
 builder.Services.AddAutoMapper(cfg => { }, typeof(NewsProfile), typeof(UserProfile));
 
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

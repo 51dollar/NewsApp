@@ -46,7 +46,7 @@ public class NewsService : INewsService
         return _mapper.Map<EditViewModel>(model);
     }
 
-    public async Task UpdateModelAsync(EditViewModel model, string userId, string username)
+    public async Task UpdateNewsAsync(EditViewModel model, string userId, string username)
     {
         var modelDb = await _unitOfWork.NewsRepository.GetByIdAsync(model.Id);
         if (modelDb == null)
@@ -87,7 +87,7 @@ public class NewsService : INewsService
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task CreateAsync(CreateViewModel model, string userId, string username)
+    public async Task CreateNewsAsync(CreateViewModel model, string userId, string username)
     {
         var news = _mapper.Map<News>(model);
 
@@ -107,9 +107,8 @@ public class NewsService : INewsService
         
         news.Author = username;
         news.UserId = Guid.Parse(userId);
-        
-        await _unitOfWork.NewsRepository.AddAsync(news);
-        await _unitOfWork.SaveAsync();
+
+        await CreateAsync(news);
     }
 
     public async Task UpdateAsync(News news)

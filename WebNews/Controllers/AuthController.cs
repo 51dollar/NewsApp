@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Models.ViewModels.Auth;
-using WebNews.Services;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
 public class AuthController : Controller
 {
-    private readonly UserService _service;
+    private readonly IUserService _service;
 
-    public AuthController(UserService service)
+    public AuthController(IServiceManager service)
     {
-        _service = service;
+        _service = service.UserService;
     }
 
     public IActionResult Register()

@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using WebNews.Services;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
 public class NewsController : Controller
 {
-    private readonly NewsService _service;
+    private readonly INewsService _service;
 
-    public NewsController(NewsService service)
+    public NewsController(IServiceManager service)
     {
-        _service = service;
+        _service = service.NewsService;
     }
 
     public async Task<IActionResult> Index()

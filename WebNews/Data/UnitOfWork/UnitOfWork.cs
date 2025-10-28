@@ -6,39 +6,20 @@ namespace WebNews.Data.UnitOfWork;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
-    private NewsRepository _newsRepository;
-    private UserRepository _userRepository;
+    private readonly Lazy<NewsRepository> _newsRepository;
+    private readonly Lazy<UserRepository> _userRepository;
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
+        _newsRepository = new Lazy<NewsRepository>(
+            () => new NewsRepository(_context));
+        _userRepository = new Lazy<UserRepository>(
+            () => new UserRepository(_context));
     }
 
-    public INewsRepository NewsRepository
-    {
-        get
-        {
-            if (_newsRepository == null)
-            {
-                _newsRepository = new NewsRepository(_context);
-            }
-
-            return _newsRepository;
-        }
-    }
-
-    public IUserRepository UserRepository
-    {
-        get
-        {
-            if (_userRepository == null)
-            {
-                _userRepository = new UserRepository(_context);
-            }
-
-            return _userRepository;
-        }
-    }
+    public INewsRepository NewsRepository => _newsRepository.Value;
+    public IUserRepository UserRepository => _userRepository.Value;
 
     public async Task SaveAsync()
     {

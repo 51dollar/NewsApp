@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebNews.Services;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
 [Authorize]
 public class AccountController : Controller
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public AccountController(UserService userService)
+    public AccountController(IServiceManager userService)
     {
-        _userService = userService;
+        _userService = userService.UserService;
     }
 
     [HttpGet]
