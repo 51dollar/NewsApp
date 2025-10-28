@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using WebNews.Models.Entities;
 
-namespace WebNews.Helpers.Auth;
+namespace WebNews.Services;
 
-public class AuthHelper
+public class AuthService
 {
     private readonly IHttpContextAccessor _context;
 
-    public AuthHelper(IHttpContextAccessor context)
+    public AuthService(IHttpContextAccessor context)
     {
         _context = context;
     }

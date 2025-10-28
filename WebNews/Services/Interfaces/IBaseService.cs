@@ -1,6 +1,6 @@
 namespace WebNews.Services.Interfaces;
 
-public interface IGenericService<T>
+public interface IBaseService<T>
 {
     IQueryable<T> GetAll();
     Task<IEnumerable<T>> GetAllAsync();

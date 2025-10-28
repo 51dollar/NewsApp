@@ -12,14 +12,14 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly Hasher _hasher;
-    private readonly AuthHelper _authHelper;
+    private readonly AuthService _authService;
     private readonly IMapper _mapper;
 
-    public UserService(IUnitOfWork unitOfWork, Hasher hasher, AuthHelper authHelper, IMapper mapper)
+    public UserService(IUnitOfWork unitOfWork, Hasher hasher, AuthService authService, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _hasher = hasher;
-        _authHelper = authHelper;
+        _authService = authService;
         _mapper = mapper;
     }
 
@@ -62,7 +62,7 @@ public class UserService : IUserService
             model.Password);
         
         await CreateAsync(user);
-        await _authHelper.SignInUserAsync(user);
+        await _authService.SignInUserAsync(user);
     }
 
     public async Task LoginAsync(LoginViewModel model)
@@ -83,12 +83,12 @@ public class UserService : IUserService
             throw new Exception("Password is not valid");
         }
 
-        await _authHelper.SignInUserAsync(userFromDb);
+        await _authService.SignInUserAsync(userFromDb);
     }
 
     public async Task LogoutAsync()
     {
-        await _authHelper.SignOutUserAsync();
+        await _authService.SignOutUserAsync();
     }
 
     public async Task UpdateAsync(User entity)

@@ -18,11 +18,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<NewsService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageHelper>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<Hasher>();
 builder.Services.AddAutoMapper(cfg => { }, typeof(NewsProfile), typeof(UserProfile));
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<AuthHelper>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
