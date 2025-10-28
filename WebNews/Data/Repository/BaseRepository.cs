@@ -3,11 +3,11 @@ using WebNews.Data.Repository.Interfaces;
 
 namespace WebNews.Data.Repository;
 
-public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
+public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
 {
     protected readonly AppDbContext _context;
 
-    public GenericRepository(AppDbContext context)
+    public BaseRepository(AppDbContext context)
     {
         _context = context;
     }

@@ -4,7 +4,7 @@ using WebNews.Models.Entities;
 
 namespace WebNews.Data.Repository;
 
-public class UserRepository : GenericRepository<User>, IUserRepository
+public class UserRepository : BaseRepository<User>, IUserRepository
 {
     public UserRepository(AppDbContext context) : base(context)
     {
