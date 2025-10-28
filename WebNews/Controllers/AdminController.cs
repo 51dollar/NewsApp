@@ -117,9 +117,26 @@ public class AdminController : Controller
         return RedirectToAction("Index");
     }
 
+    [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _newsService.DeleteAsync(id);
         return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = RoleType.Admin)]
+    public async Task<IActionResult> AllNews(int countNews = 100)
+    {
+        var listNewsDb = await _newsService.GetLatestAsync(countNews);
+        return View(listNewsDb);
+    }
+    
+    [HttpGet]
+    [Authorize(Roles = RoleType.Admin)]
+    public async Task<IActionResult> AllUsers(int countUsers = 100)
+    {
+        var listUsersDb = await _userService.GetLatestAsync(countUsers);
+        return View(listUsersDb);
     }
 }

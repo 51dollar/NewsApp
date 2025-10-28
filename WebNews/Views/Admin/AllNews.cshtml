@@ -1,0 +1,59 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WebNews.Helpers.UI
+
+@{
+    ViewData["Title"] = "All List News";
+}
+<div class="container-3 mt-4">
+<table class="table table-sm table-bordered table-hover text-center align-middle">
+    <thead class="table-dark">
+    <tr>
+        <th class="p-1" style="width: 20%;">ID News</th>
+        <th class="p-1" style="width: 35%;">Title</th>
+        <th class="p-1" style="width: 10%;">Author</th>
+        <th class="p-1" style="width: 10%;">Published</th>
+        <th class="p-1" style="width: 30%;">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr class="table-light">
+            <td>
+                @item.Id
+            </td>
+            <td>@(HtmlTagHelper.RemoveHtmlTags(item.Title).Length > 100
+                    ? HtmlTagHelper.RemoveHtmlTags(item.Title).Substring(0, 100) + "..."
+                    : HtmlTagHelper.RemoveHtmlTags(item.Title))
+            </td>
+            <td>
+                @item.Author
+            </td>
+            <td>
+                @item.PublishDateTime.ToString("dd MMM yyyy")
+            </td>
+            <td>
+                <a asp-controller="News" asp-action="Details" asp-route-id="@item.Id"
+                   class="btn btn-info btn-sm me-1 actions-btn"
+                   style="width: 80px; height: 40px; margin-top: 3px; margin-left: 3px;">
+                    Details
+                </a>
+                <a asp-controller="Admin" asp-action="Edit" asp-route-id="@item.Id"
+                   class="btn btn-warning btn-sm me-1 actions-btn"
+                   style="width: 80px; height: 40px; margin-top: 3px; margin-left: 3px;">
+                    Edit
+                </a>
+                <form asp-controller="Admin" asp-action="Delete" asp-route-id="@item.Id" method="post"
+                      class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-sm me-1 actions-btn"
+                            style="width: 80px; height: 40px; margin-top: 3px; margin-left: 3px;"
+                            onclick="return confirm('Are you sure you want to delete this post?')">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
