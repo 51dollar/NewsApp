@@ -11,11 +11,11 @@ namespace WebNews.Services;
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly Hasher<User> _hasher;
+    private readonly Hasher _hasher;
     private readonly AuthHelper _authHelper;
     private readonly IMapper _mapper;
 
-    public UserService(IUnitOfWork unitOfWork, Hasher<User> hasher, AuthHelper authHelper, IMapper mapper)
+    public UserService(IUnitOfWork unitOfWork, Hasher hasher, AuthHelper authHelper, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _hasher = hasher;
