@@ -43,17 +43,14 @@ public class NewsService : INewsService
             throw new Exception($"News with id {id} not found");
         }
         
-        return _mapper.Map<EditViewModel>(model);
+        var viewModel = _mapper.Map<EditViewModel>(model);
+        viewModel.ImageNews = model.ImagePath;
+        
+        return viewModel;
     }
 
     public async Task UpdateNewsAsync(EditViewModel model, string userId, string username)
     {
-        var modelDb = await _unitOfWork.NewsRepository.GetByIdAsync(model.Id);
-        if (modelDb == null)
-        {
-            throw new Exception($"News with id {model.Id} not found");
-        }
-        
         var modelMap = _mapper.Map<News>(model);
         
         if (model.InputImage != null)

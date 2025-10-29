@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Services.Interfaces;
@@ -17,14 +18,17 @@ public class AccountController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
-        
-        var modelUser = await _userService.GetByIdAsync(Guid.Parse(userId));
-        if (modelUser == null)
-            return BadRequest();
-        
-        return View(modelUser);
+        try
+        {
+            var accountViewModel = await _userService.GetAccountByIdAsync(Guid.Parse(userId));
+            return View(accountViewModel);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

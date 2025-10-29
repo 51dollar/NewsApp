@@ -9,5 +9,6 @@ public class NewsProfile : Profile
     public NewsProfile()
     {
         CreateMap<News, CreateViewModel>().ReverseMap();
+        CreateMap<News, EditViewModel>().ReverseMap();
     }
 }

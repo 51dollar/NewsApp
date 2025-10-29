@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WebNews.Data.UnitOfWork;
 using WebNews.Helpers.Auth;
 using WebNews.Models.Entities;
+using WebNews.Models.ViewModels.Account;
 using WebNews.Models.ViewModels.Auth;
 using WebNews.Services.Interfaces;
 
@@ -55,12 +56,12 @@ public class UserService : IUserService
     public async Task RegisterAsync(RegisterViewModel model)
     {
         var user = _mapper.Map<User>(model);
-        
+
         user.Role = RoleType.User;
         user.PasswordHash = _hasher.HashPassword(
             user,
             model.Password);
-        
+
         await CreateAsync(user);
         await _authService.SignInUserAsync(user);
     }
@@ -72,7 +73,7 @@ public class UserService : IUserService
         {
             throw new Exception("Email is not exist");
         }
-        
+
         var isPasswordValid = _hasher.VerifyPassword(
             userFromDb,
             userFromDb.PasswordHash,
@@ -115,5 +116,18 @@ public class UserService : IUserService
     public async Task<bool> IsUserExistsByEmailAsync(string email)
     {
         return await _unitOfWork.UserRepository.ExistsByEmailAsync(email);
+    }
+
+    public async Task<AccountViewModel> GetAccountByIdAsync(Guid id)
+    {
+        var user = await GetByIdAsync(id);
+        if (user == null)
+        {
+            throw new Exception("User is not exist");
+        }
+
+        var viewModel = _mapper.Map<AccountViewModel>(user);
+        
+        return viewModel;
     }
 }
