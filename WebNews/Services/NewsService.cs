@@ -58,13 +58,17 @@ public class NewsService : INewsService
         
         if (model.InputImage != null)
         {
-            if (model.ImageNews != null && model.ImageNews != "/Image/default.png") 
+            if (!string.IsNullOrEmpty(model.ImageNews) && model.ImageNews != "/Image/default.png") 
             {
                 _imageHelper.DeleteFile(model.ImageNews);
             }
 
             var newUrlImage = await _imageHelper.UploadFileAsync(model.InputImage);
             modelMap.ImagePath = newUrlImage;
+        }
+        else
+        {
+            modelMap.ImagePath = model.ImageNews;
         }
         
         modelMap.UserId = Guid.Parse(userId);
