@@ -2,7 +2,7 @@ using AutoMapper;
 using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.News;
 
-namespace WebNews.Helpers.AutoMapper.MappingProfiles;
+namespace WebNews.AutoMapper.Profiles;
 
 public class NewsProfile : Profile
 {
