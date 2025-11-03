@@ -31,20 +31,17 @@ public class ImageHelper
         return $"/Image/{fileName}";
     }
 
-    public void DeleteFile(string fileName)
+    public async Task DeleteFile(string? fileName)
     {
         if (string.IsNullOrEmpty(fileName) || fileName == "/Image/default.png")
-        {
             return;
-        }
-        
-        string cleanPath = fileName.TrimStart('/','\\');
-        
+
+        string cleanPath = fileName.TrimStart('/', '\\');
         string filePath = Path.Combine(_webHost.WebRootPath, cleanPath);
-        
+
         if (File.Exists(filePath))
         {
-            File.Delete(filePath);
+            await Task.Run(() => File.Delete(filePath));
         }
     }
 

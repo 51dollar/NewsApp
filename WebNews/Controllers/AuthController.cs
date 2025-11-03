@@ -28,7 +28,7 @@ public class AuthController : Controller
         }
 
         var existEmail = await _service.IsUserExistsByEmailAsync(model.Email);
-        if (!existEmail)
+        if (existEmail)
         {
             ViewBag.Error = "Email already exists";
             return View(model);

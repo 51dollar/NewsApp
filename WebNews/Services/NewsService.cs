@@ -55,10 +55,7 @@ public class NewsService : INewsService
         
         if (model.InputImage != null)
         {
-            if (!string.IsNullOrEmpty(model.ImageNews) && model.ImageNews != "/Image/default.png") 
-            {
-                _imageHelper.DeleteFile(model.ImageNews);
-            }
+            await _imageHelper.DeleteFile(model.ImageNews);
 
             var newUrlImage = await _imageHelper.UploadFileAsync(model.InputImage);
             modelMap.ImagePath = newUrlImage;
@@ -94,7 +91,7 @@ public class NewsService : INewsService
 
         if (model.Image != null)
         {
-            if (_imageHelper.ValidFileExtension(model.Image))
+            if (!_imageHelper.ValidFileExtension(model.Image))
             {
                 throw new Exception("Invalid file extension. Allowed format are .jpg, .jpeg, .png");
             }
@@ -124,7 +121,8 @@ public class NewsService : INewsService
 
         if (getNews != null)
         {
-            _unitOfWork.NewsRepository.Delete(getNews);
+            _unitOfWork.NewsRepository.Delete(getNews); 
+            await _imageHelper.DeleteFile(getNews.ImagePath);
         }
 
         await _unitOfWork.SaveAsync();
