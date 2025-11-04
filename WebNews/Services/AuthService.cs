@@ -1,44 +1,60 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using WebNews.Data.UnitOfWork;
 using WebNews.Models.Entities;
+using WebNews.Models.ViewModels.Auth;
+using WebNews.Services.Interfaces;
 
 namespace WebNews.Services;
 
-public class AuthService
+public class AuthService : IAuthService
 {
-    private readonly IHttpContextAccessor _context;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public AuthService(IHttpContextAccessor context)
+    public AuthService(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
-    public async Task SignInUserAsync(User request)
+    public async Task RegisterAsync(RegisterViewModel request, string role)
     {
-        var claims = new List<Claim>
+        var user = _mapper.Map<User>(request);
+        
+        var result = await _unitOfWork.UserManager.CreateAsync(user, request.Password);
+        if (!result.Succeeded)
         {
-            new Claim(ClaimTypes.NameIdentifier, request.Id.ToString()),
-            new Claim(ClaimTypes.Email, request.Email),
-            new Claim(ClaimTypes.Name, request.Username),
-            new Claim(ClaimTypes.Role, request.Role),
-        };
+            throw new Exception(result.Errors.First().Description);
+        }
 
-        var claimsIdentity = new ClaimsIdentity(
-            claims,
-            CookieAuthenticationDefaults.AuthenticationScheme
-        );
-
-        await _context.HttpContext!.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            new ClaimsPrincipal(claimsIdentity)
-        );
+        if (!await _unitOfWork.RoleManager.RoleExistsAsync(role))
+        {
+            await _unitOfWork.RoleManager.CreateAsync(new IdentityRole<Guid>(role));
+        }
+        
+        await _unitOfWork.UserManager.AddToRoleAsync(user, role);
+        await _unitOfWork.SignInManager.SignInAsync(user, false);
     }
 
-    public async Task SignOutUserAsync()
+    public async Task LoginAsync(LoginViewModel request)
     {
-        await _context.HttpContext!.SignOutAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme
-        );
+        var user = await _unitOfWork.UserManager.FindByEmailAsync(request.Email);
+        if (user == null)
+        {
+            throw new Exception("Email does not exist");
+        }
+        
+        var result = await _unitOfWork.SignInManager.PasswordSignInAsync(
+            user, request.Password, request.RememberMe, lockoutOnFailure: false);
+        if (!result.Succeeded)
+        {
+            throw new Exception("Invalid password");
+        }
+    }
+
+    public async Task LogoutAsync()
+    {
+        await _unitOfWork.SignInManager.SignOutAsync();
     }
 }

@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebNews.Helpers.Auth;
+using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.Admin;
 using WebNews.Models.ViewModels.News;
 using WebNews.Services.Interfaces;
@@ -44,6 +44,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Create(CreateViewModel model)
     {
@@ -95,6 +96,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Edit(EditViewModel model)
     {
@@ -117,6 +119,8 @@ public class AdminController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize(Roles = RoleType.Admin)]
     public async Task<IActionResult> Delete(Guid id)
     {

@@ -1,10 +1,7 @@
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using WebNews.Data.UnitOfWork;
-using WebNews.Helpers.Auth;
 using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.Account;
-using WebNews.Models.ViewModels.Auth;
 using WebNews.Services.Interfaces;
 
 namespace WebNews.Services;
@@ -12,110 +9,57 @@ namespace WebNews.Services;
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly Hasher _hasher;
-    private readonly AuthService _authService;
     private readonly IMapper _mapper;
 
-    public UserService(IUnitOfWork unitOfWork, Hasher hasher, AuthService authService, IMapper mapper)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
-        _hasher = hasher;
-        _authService = authService;
         _mapper = mapper;
     }
 
     public IQueryable<User> GetAll()
     {
-        return _unitOfWork.UserRepository.GetAll();
+        return _unitOfWork.UserManager.Users;
     }
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _unitOfWork.UserRepository.GetAllAsync();
+        return await Task.FromResult(_unitOfWork.UserManager.Users.ToList());
     }
 
-    public async Task<IEnumerable<User>> GetLatestAsync(int count)
+    public async Task<IReadOnlyList<User>> GetLatestAsync(int count)
     {
-        return await GetAll()
+        return await Task.FromResult(_unitOfWork.UserManager.Users
             .OrderByDescending(u => u.DateCreate)
             .Take(count)
-            .ToListAsync();
+            .ToList());
     }
 
     public async Task<User?> GetByIdAsync(Guid id)
     {
-        return await _unitOfWork.UserRepository.GetByIdAsync(id);
-    }
-
-    public async Task CreateAsync(User entity)
-    {
-        await _unitOfWork.UserRepository.AddAsync(entity);
-        await _unitOfWork.SaveAsync();
-    }
-
-    public async Task RegisterAsync(RegisterViewModel model)
-    {
-        var user = _mapper.Map<User>(model);
-
-        user.Role = RoleType.User;
-        user.PasswordHash = _hasher.HashPassword(
-            user,
-            model.Password);
-
-        await CreateAsync(user);
-        await _authService.SignInUserAsync(user);
-    }
-
-    public async Task LoginAsync(LoginViewModel model)
-    {
-        var userFromDb = await GetUserByEmailAsync(model.Email);
-        if (userFromDb == null)
-        {
-            throw new Exception("Email is not exist");
-        }
-
-        var isPasswordValid = _hasher.VerifyPassword(
-            userFromDb,
-            userFromDb.PasswordHash,
-            model.Password);
-
-        if (!isPasswordValid)
-        {
-            throw new Exception("Password is not valid");
-        }
-
-        await _authService.SignInUserAsync(userFromDb);
-    }
-
-    public async Task LogoutAsync()
-    {
-        await _authService.SignOutUserAsync();
+        return await _unitOfWork.UserManager.FindByIdAsync(id.ToString());
     }
 
     public async Task UpdateAsync(User entity)
     {
-        _unitOfWork.UserRepository.Update(entity);
-        await _unitOfWork.SaveAsync();
+        var result = await _unitOfWork.UserManager.UpdateAsync(entity);
+        if (!result.Succeeded)
+        {
+            throw new Exception(result.Errors.First().Description);
+        }
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+        var user = await GetByIdAsync(id);
         if (user != null)
         {
-            _unitOfWork.UserRepository.Delete(user);
-            await _unitOfWork.SaveAsync();
+            var result = await _unitOfWork.UserManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.First().Description);
+            }
         }
-    }
-
-    public async Task<User?> GetUserByEmailAsync(string email)
-    {
-        return await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
-    }
-
-    public async Task<bool> IsUserExistsByEmailAsync(string email)
-    {
-        return await _unitOfWork.UserRepository.ExistsByEmailAsync(email);
     }
 
     public async Task<AccountViewModel> GetAccountByIdAsync(Guid id)
@@ -125,9 +69,7 @@ public class UserService : IUserService
         {
             throw new Exception("User is not exist");
         }
-
-        var viewModel = _mapper.Map<AccountViewModel>(user);
         
-        return viewModel;
+        return _mapper.Map<AccountViewModel>(user);
     }
 }

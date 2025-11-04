@@ -24,12 +24,7 @@ public class NewsService : INewsService
     {
         return _unitOfWork.NewsRepository.GetAll();
     }
-
-    public async Task<IEnumerable<News>> GetAllAsync()
-    {
-        return await _unitOfWork.NewsRepository.GetAllAsync();
-    }
-
+    
     public async Task<News?> GetByIdAsync(Guid id)
     {
         return await _unitOfWork.NewsRepository.GetByIdAsync(id);
@@ -72,7 +67,7 @@ public class NewsService : INewsService
         await UpdateAsync(modelMap);
     }
     
-    public async Task<IEnumerable<News>> GetLatestAsync(int count)
+    public async Task<IReadOnlyList<News>> GetLatestAsync(int count)
     {
         return await GetAll()
             .OrderByDescending(x => x.CreatedAtUtc)

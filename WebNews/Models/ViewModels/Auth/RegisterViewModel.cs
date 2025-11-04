@@ -17,10 +17,6 @@ public class RegisterViewModel
 
     [Required(ErrorMessage = "Password is required")]
     [StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 50 characters")]
-    [RegularExpression(
-        @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$",
-        ErrorMessage = "Password must include uppercase, lowercase, number, and special character."
-    )]
     [DataType(DataType.Password)]
     [Display(Name = "Password")]
     public string Password { get; set; } = string.Empty;

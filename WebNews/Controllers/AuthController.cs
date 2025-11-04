@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.Auth;
 using WebNews.Services.Interfaces;
 
@@ -6,11 +7,11 @@ namespace WebNews.Controllers;
 
 public class AuthController : Controller
 {
-    private readonly IUserService _service;
+    private readonly IAuthService _service;
 
     public AuthController(IServiceManager service)
     {
-        _service = service.UserService;
+        _service = service.AuthService;
     }
 
     public IActionResult Register()
@@ -18,32 +19,36 @@ public class AuthController : Controller
         return View();
     }
 
-    [HttpPost]
+    [HttpPost]  
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid)    
         {
             ViewBag.Error = "Date in not valid";
             return View(model);
         }
 
-        var existEmail = await _service.IsUserExistsByEmailAsync(model.Email);
-        if (existEmail)
+        try
         {
-            ViewBag.Error = "Email already exists";
+            await _service.RegisterAsync(model, RoleType.User);
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Error = ex.Message;
             return View(model);
         }
-
-        await _service.RegisterAsync(model);
-        return RedirectToAction("Index", "Home");
     }
 
+    [HttpGet]
     public IActionResult Login()
     {
         return View();
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
@@ -63,7 +68,8 @@ public class AuthController : Controller
             return View(model);
         }
     }
-
+    
+    [HttpGet]
     public async Task<IActionResult> Logout()
     {
         await _service.LogoutAsync();

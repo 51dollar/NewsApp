@@ -1,3 +1,4 @@
+@model IEnumerable<WebNews.Models.Entities.User>
 
 @{
     ViewData["Title"] = "All List Users";
@@ -22,13 +23,13 @@
                     @user.Id
                 </td>
                 <td>
-                    @user.Username
+                    @user.UserName
                 </td>
                 <td>
                     @user.Email
                 </td>
                 <td>
-                    @user.Role
+                    
                 </td>
                 <td>
                     @user.PublishDateCreate.ToString("dd MMM yyyy")

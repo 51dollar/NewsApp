@@ -12,9 +12,10 @@ public class NewsController : Controller
         _service = service.NewsService;
     }
 
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public async Task<IActionResult> Index(int count = 100)
     {
-        var allNews = await _service.GetAllAsync();
+        var allNews = await _service.GetLatestAsync(count);
         return View(allNews);
     }
 

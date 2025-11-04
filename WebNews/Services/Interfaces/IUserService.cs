@@ -1,15 +1,12 @@
 using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.Account;
-using WebNews.Models.ViewModels.Auth;
+using WebNews.Services.Interfaces.Base;
 
 namespace WebNews.Services.Interfaces;
 
-public interface IUserService : IBaseService<User>
+public interface IUserService : IBaseReadService<User>
 {
-    Task RegisterAsync(RegisterViewModel entity);
-    Task LoginAsync(LoginViewModel entity);
-    Task LogoutAsync();
-    Task<User?> GetUserByEmailAsync(string email);
-    Task<bool> IsUserExistsByEmailAsync(string email);
     Task<AccountViewModel> GetAccountByIdAsync(Guid id);
+    Task DeleteAsync(Guid id);
+    Task UpdateAsync(User entity);
 }

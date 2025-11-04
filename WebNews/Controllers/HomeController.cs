@@ -16,6 +16,7 @@ public class HomeController : Controller
         _service = service;
     }
 
+    [HttpGet]
     public async Task<IActionResult> Index(int countNews = 6)
     {
         var latestNew = await _service.NewsService.GetLatestAsync(countNews);

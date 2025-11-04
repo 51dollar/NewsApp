@@ -16,6 +16,7 @@
                 }
 
                 <form asp-action="Login" asp-controller="Auth" method="post">
+                    @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label"></label>
                         <input asp-for="Email" class="form-control rounded-3" placeholder="Enter your email"/>
@@ -29,6 +30,13 @@
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
+                    <div>
+                        <label class="form-check-label">
+                            <input asp-for="RememberMe" class="form-check-input"/>
+                            @Html.DisplayNameFor(a => a.RememberMe)
+                        </label>
+                    </div>
+                    
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-success rounded-3">Login</button>
                     </div>

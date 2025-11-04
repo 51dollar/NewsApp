@@ -1,16 +1,15 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using WebNews.AutoMapper.Profiles;
 using WebNews.Services;
-using WebNews.Data.Extensions;
 using WebNews.Data.UnitOfWork;
-using WebNews.Helpers.Auth;
+using WebNews.Extensions;
 using WebNews.Helpers.AutoMapper.MappingProfiles;
 using WebNews.Helpers.Image;
 using WebNews.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDatabase();
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddIdentityServices();
 
 builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization()
@@ -19,20 +18,12 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ImageHelper>();
-builder.Services.AddScoped<Hasher>();
 builder.Services.AddAutoMapper(cfg => { }, typeof(NewsProfile), typeof(UserProfile));
 
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        options.SlidingExpiration = true;
-    });
 
 var app = builder.Build();
 

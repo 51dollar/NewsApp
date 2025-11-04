@@ -1,9 +1,10 @@
 using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.News;
+using WebNews.Services.Interfaces.Base;
 
 namespace WebNews.Services.Interfaces;
 
-public interface INewsService : IBaseService<News>
+public interface INewsService : IBaseReadService<News>, IBaseCommandService<News>
 {
     Task CreateNewsAsync(CreateViewModel model, string userId, string username);
     Task<EditViewModel?> ReturnViewModelAsync(Guid id);

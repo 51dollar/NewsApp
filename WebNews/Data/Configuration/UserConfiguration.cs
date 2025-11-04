@@ -14,7 +14,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMany(x => x.News)
             .WithOne(x => x.User);
 
-        builder.Property(x => x.Username)
+        builder.Property(x => x.UserName)
             .IsRequired()
             .HasMaxLength(50);
 
