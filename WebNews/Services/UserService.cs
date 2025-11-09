@@ -17,22 +17,17 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public IQueryable<User> GetAll()
+    private IQueryable<User> GetAll()
     {
-        return _unitOfWork.UserManager.Users;
-    }
-
-    public async Task<IEnumerable<User>> GetAllAsync()
-    {
-        return await Task.FromResult(_unitOfWork.UserManager.Users.ToList());
+        return _unitOfWork.UserManager.Users.AsNoTracking();
     }
 
     public async Task<IReadOnlyList<User>> GetLatestAsync(int count)
     {
-        return await Task.FromResult(_unitOfWork.UserManager.Users
+        return await GetAll()
             .OrderByDescending(u => u.DateCreate)
             .Take(count)
-            .ToList());
+            .ToListAsync();
     }
 
     public async Task<User?> GetByIdAsync(Guid id)

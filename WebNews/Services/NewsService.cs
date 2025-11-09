@@ -20,9 +20,9 @@ public class NewsService : INewsService
         _mapper = mapper;
         _imageHelper = imageHelper;
     }
-    public IQueryable<News> GetAll()
+    private IQueryable<News> GetAll()
     {
-        return _unitOfWork.NewsRepository.GetAll();
+        return _unitOfWork.NewsRepository.GetAll().AsNoTracking();
     }
     
     public async Task<News?> GetByIdAsync(Guid id)
