@@ -1,6 +1,3 @@
-using AutoMapper;
-using WebNews.Data.UnitOfWork;
-using WebNews.Helpers.Image;
 using WebNews.Services.Interfaces;
 
 namespace WebNews.Services;
@@ -13,11 +10,13 @@ public class ServiceManager : IServiceManager
     public IUserService UserService { get; }
     public IAuthService AuthService { get; }
 
-    public ServiceManager(IUnitOfWork uow, IMapper mapper, ImageHelper imageHelper)
+    public ServiceManager(
+        IUserService userService, 
+        IAuthService authService,
+        INewsService newsService)
     {
-        _newsService = new Lazy<INewsService>(
-            () => new NewsService(uow, mapper, imageHelper));
-        UserService = new UserService(uow, mapper);
-        AuthService = new AuthService(uow, mapper);
+        UserService = userService;
+        AuthService = authService;
+        _newsService = new Lazy<INewsService>(newsService);
     }
 }
