@@ -31,5 +31,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.DateCreate)
             .HasColumnType("date");
+        builder.HasIndex(x => x.DateCreate);
     }
 }

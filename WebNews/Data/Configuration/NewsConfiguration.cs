@@ -29,9 +29,11 @@ public class NewsConfiguration : IEntityTypeConfiguration<News>
 
         builder.Property(n => n.Author)
             .IsRequired(false)
-            .HasMaxLength(100);
+            .HasMaxLength(50);
 
         builder.Property(x => x.CreatedAtUtc)
+            .IsRequired()
             .HasColumnType("date");
+        builder.HasIndex(x => x.CreatedAtUtc);
     }
 }
