@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.Admin;
+using WebNews.Models.ViewModels.Admin.Role;
 using WebNews.Models.ViewModels.News;
 using WebNews.Services.Interfaces;
 
 namespace WebNews.Controllers;
 
-[Authorize(Roles = RoleType.Admin)]
+[Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
 public class AdminController : Controller
 {
     private readonly INewsService _newsService;
@@ -23,7 +24,7 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin+ "," + RoleType.Moderator)]
     public async Task<IActionResult> Index(int countNews = 10, int countUsers = 10)
     {
         var allNews = await _newsService.GetLatestAsync(countNews);
@@ -39,7 +40,7 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
     public IActionResult Create()
     {
         return View();
@@ -47,7 +48,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
     public async Task<IActionResult> Create(CreateViewModel model)
     {
         if (!ModelState.IsValid)
@@ -78,7 +79,7 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
     public async Task<IActionResult> Edit(Guid? id)
     {
         if (!id.HasValue || id.Value == Guid.Empty)
@@ -99,7 +100,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
     public async Task<IActionResult> Edit(EditViewModel model)
     {
         if (!ModelState.IsValid)
@@ -123,7 +124,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _newsService.DeleteAsync(id);
@@ -131,7 +132,7 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-    [Authorize(Roles = RoleType.Admin)]
+    [Authorize(Roles = RoleType.Admin + "," + RoleType.Moderator)]
     public async Task<IActionResult> AllNews(int countNews = 100)
     {
         var listNewsDb = await _newsService.GetLatestAsync(countNews);
@@ -144,5 +145,50 @@ public class AdminController : Controller
     {
         var listUsersDb = await _userService.GetLatestAsync(countUsers);
         return View(listUsersDb);
+    }
+
+    [HttpGet]
+    [Authorize(Roles = RoleType.Admin)]
+    public async Task<IActionResult> EditRoles(Guid id)
+    {
+        if (id == Guid.Empty)
+        {
+            return BadRequest("User ID is required.");
+        }
+
+        try
+        {
+            var model = await _roleService.GetRolesForUserAsync(id);
+            return View(model);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleType.Admin)]
+    public async Task<IActionResult> EditRoles(EditRolesViewModel? model)
+    {
+        if (model == null)
+        {
+            return BadRequest();
+        }
+        if (model.UserId == Guid.Empty)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _roleService.UpdateRolesAsync(model);
+            return RedirectToAction("Index");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
