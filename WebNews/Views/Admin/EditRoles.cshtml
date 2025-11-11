@@ -1,0 +1,33 @@
+@model WebNews.Models.ViewModels.Admin.Role.EditRolesViewModel
+
+@{
+    ViewData["Title"] = "Edit Roles";
+}
+
+<div class="content-wrapper container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4 rounded-4">
+                <h2 class="text-center">Select Roles</h2>
+
+                <form asp-action="EditRoles" asp-controller="Admin" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="UserId" />
+                    @for (int i = 0; i < Model.AllRoles.Count; i++)
+                    {
+                        <div style="">
+                            <input type="checkbox" asp-for="AllRoles[i].IsSelected"/>
+                            <label>@Model.AllRoles[i].Name</label>
+
+                            <input type="hidden" asp-for="AllRoles[i].Name"/>
+                        </div>
+                    }
+                    
+                    <div class="d-flex justify-content-center mt-1">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 3px;">Add Roles</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

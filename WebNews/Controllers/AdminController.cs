@@ -13,11 +13,13 @@ public class AdminController : Controller
 {
     private readonly INewsService _newsService;
     private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
 
-    public AdminController(IServiceManager newsService, IServiceManager userService)
+    public AdminController(IServiceManager service)
     {
-        _newsService = newsService.NewsService;
-        _userService = userService.UserService;
+        _roleService = service.RoleService;
+        _newsService = service.NewsService;
+        _userService = service.UserService;
     }
 
     [HttpGet]
@@ -25,14 +27,14 @@ public class AdminController : Controller
     public async Task<IActionResult> Index(int countNews = 10, int countUsers = 10)
     {
         var allNews = await _newsService.GetLatestAsync(countNews);
-        var allUsers = await _userService.GetLatestAsync(countUsers);
-
+        var allUsers = await _userService.GetLatestWithRolesAsync(countUsers);
+        
         var model = new AdminDashboardViewModel
         {
             NewsItems = allNews,
             Users = allUsers,
         };
-
+        
         return View(model);
     }
 

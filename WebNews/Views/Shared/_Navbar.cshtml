@@ -24,7 +24,8 @@
                     </a>
                 </li>
 
-                @if (User?.Identity?.IsAuthenticated == true && User.IsInRole(RoleType.Admin))
+                @if (User?.Identity?.IsAuthenticated == true && 
+                     (User.IsInRole(RoleType.Admin) || User.IsInRole(RoleType.Moderator)))
                 {
                     <li class="nav-item">
                         <a class="nav-link active" asp-controller="Admin" asp-action="Index">

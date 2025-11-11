@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 

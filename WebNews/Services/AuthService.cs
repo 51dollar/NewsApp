@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using WebNews.Data.UnitOfWork;
 using WebNews.Models.Entities;
 using WebNews.Models.ViewModels.Auth;
@@ -11,29 +10,28 @@ public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IRoleService _roleService;
 
-    public AuthService(IUnitOfWork unitOfWork, IMapper mapper)
+    public AuthService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _roleService = roleService;
     }
 
     public async Task RegisterAsync(RegisterViewModel request, string role)
     {
         var user = _mapper.Map<User>(request);
-        
-        var result = await _unitOfWork.UserManager.CreateAsync(user, request.Password);
-        if (!result.Succeeded)
+
+        var createUserResult = await _unitOfWork.UserManager.CreateAsync(user, request.Password);
+        if (!createUserResult.Succeeded)
         {
-            throw new Exception(result.Errors.First().Description);
+            throw new InvalidOperationException("Create user failed");
         }
 
-        if (!await _unitOfWork.RoleManager.RoleExistsAsync(role))
-        {
-            await _unitOfWork.RoleManager.CreateAsync(new IdentityRole<Guid>(role));
-        }
-        
-        await _unitOfWork.UserManager.AddToRoleAsync(user, role);
+        await _roleService.CreateRoleAsync(role);
+        await _roleService.AddRoleAsync(user, role);
+
         await _unitOfWork.SignInManager.SignInAsync(user, false);
     }
 
@@ -44,7 +42,7 @@ public class AuthService : IAuthService
         {
             throw new Exception("Email does not exist");
         }
-        
+
         var result = await _unitOfWork.SignInManager.PasswordSignInAsync(
             user, request.Password, request.RememberMe, lockoutOnFailure: false);
         if (!result.Succeeded)
