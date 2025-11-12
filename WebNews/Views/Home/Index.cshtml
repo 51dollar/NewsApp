@@ -1,19 +1,36 @@
-﻿@{
+﻿@model IEnumerable<WebNews.Models.Entities.News>
+@using System.Linq
+
+@{
     ViewData["Title"] = "Latest news";
 }
 
 <div class="container mt-4">
+    <div class="row mb-5">
+        @foreach (var topItem in Model.Take(2))
+        {
+            <div class="col-lg-6 mb-4">
+                <a asp-controller="News" asp-action="Details" asp-route-id="@topItem.Id" class="text-decoration-none text-dark">
+                    <div class="position-relative shadow-lg rounded-3 rounded overflow-hidden featured-news" style="height: 350px;">
+                        <img src="@(topItem.ImagePath)" class="w-100 h-100" style="object-fit: cover;" />
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" style="background: rgba(0, 0, 0, 0.3);">
+                            <h4 class="mb-0 text-white">@topItem.Title</h4>
+                            <p class="mb-0 text-white">@topItem.Subtitle</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    
     <div class="row">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Skip(2))
         {
             <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow rounded-3">
-                    <a asp-controller="News" asp-action="Details" asp-route-id="@item.Id"
-                       class="text-decoration-none text-dark">
-                        <img src="@(item.ImagePath)"
-                             class="card-img-top img-fluid"
-                             style="max-height:300px; object-fit:cover;"/>
-
+                <div class="card h-100 shadow rounded-3 overflow-hidden news-card">
+                    <a asp-controller="News" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        <img src="@(item.ImagePath)" class="card-img-top img-fluid" style="max-height:300px; object-fit:cover;" />
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>
                             <p class="card-text text-muted">@item.Subtitle</p>

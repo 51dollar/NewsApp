@@ -5,45 +5,51 @@
     ViewData["Title"] = "Edit Post";
 }
 
-<div class="content-wrapper mt-3">
-    <form asp-action="Edit" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-3">
-        
-        @if (ViewBag.Error != null)
-        {
-            <div class="alert alert-danger rounded-3">@ViewBag.Error</div>
-        }
-        
-        <div>
-            <label asp-for="Title" class="fs-4"></label>
-            <input asp-for="Title" class="form-control rounded-3"/>
-            <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
-        <div class="mt-2">
-            <label asp-for="Subtitle" class="fs-4"></label>
-            <input asp-for="Subtitle" class="form-control rounded-3"/>
-            <span asp-validation-for="Subtitle" class="text-danger"></span>
-        </div>
-        <div class="mt-2">
-            <label asp-for="Content" class="fs-4"></label>
-            <textarea asp-for="Content" class="form-control" rows="5"></textarea>
-            <span asp-validation-for="Content" class="text-danger"></span>
-        </div>
-        <div class="mt-2">
-            <label asp-for="ImageNews" class="fs-4"></label>
-            <input type="hidden" asp-for="ImageNews" value="@Model.ImageNews" />
-            <div class="d-flex justify-content-center align-items-center">
-                <img src="@Model.ImageNews" alt="Image" class="feature-image rounded-3"/>
+<div class="container">
+    <div class="content-wrapper">
+        <div class="row justify-content-center shadow-lg rounded-5">
+            <div class="card bg-light p-4">
+                <form asp-action="Edit" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mt-3">
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger rounded-3">@ViewBag.Error</div>
+                    }
+
+                    <div>
+                        <label asp-for="Title" class="fs-4"></label>
+                        <input asp-for="Title" class="form-control bg-white rounded-3"/>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="mt-2">
+                        <label asp-for="Subtitle" class="fs-4"></label>
+                        <input asp-for="Subtitle" class="form-control bg-white rounded-3"/>
+                        <span asp-validation-for="Subtitle" class="text-danger"></span>
+                    </div>
+                    <div class="mt-2">
+                        <label asp-for="Content" class="fs-4"></label>
+                        <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                    <div class="mt-2">
+                        <label asp-for="ImageNews" class="fs-4"></label>
+                        <input type="hidden" asp-for="ImageNews" value="@Model.ImageNews"/>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img src="@Model.ImageNews" alt="Image" class="feature-image rounded-3"/>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label asp-for="InputImage" class="fs-4">New Image</label>
+                        <input asp-for="InputImage" type="file" class="form-control bg-white rounded-3"/>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary mt-1">Edit News</button>
+                        <a asp-action="Index" class="btn btn-secondary mt-1">Back to Page</a>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="mt-2">
-            <label asp-for="InputImage" class="fs-4">New Image</label>
-            <input asp-for="InputImage" type="file" class="form-control rounded-3"/>
-        </div>
-        <div class="d-flex justify-content-center gap-2 mt-4">
-            <button type="submit" class="btn btn-primary mt-1">Edit News</button>
-            <a asp-action="Index" class="btn btn-secondary mt-1">Back to Page</a>
-        </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts
