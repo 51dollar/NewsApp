@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using WebNews.Helpers.UI
+﻿@using WebNews.Helpers.UI
 @using WebNews.Models.Entities
 @model WebNews.Models.ViewModels.Admin.AdminDashboardViewModel
 
@@ -69,6 +68,7 @@
         <tr class="table-light">
             <td colspan="5" class="p-1">
                 <a asp-controller="Admin" asp-action="AllNews"
+                   target="_blank"
                    class="text-decoration-none text-dark fw-bold d-block text-center"
                    style="font-size: 1rem; line-height: 1; padding: 6px 0;">
                     ...
@@ -126,6 +126,7 @@
             <tr class="table-light">
                 <td colspan="6" class="p-1">
                     <a asp-controller="Admin" asp-action="AllUsers"
+                       target="_blank"
                        class="text-decoration-none text-dark fw-bold d-block text-center"
                        style="font-size: 1rem; line-height: 1; padding: 6px 0;">
                         ...
