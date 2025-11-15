@@ -68,21 +68,49 @@ public class UserService : IUserService
         {
             throw new Exception("User is not exist");
         }
-        
+
         return _mapper.Map<AccountViewModel>(user);
     }
 
     public async Task<IReadOnlyList<UserDto>> GetLatestWithRolesAsync(int count)
     {
         var users = await GetLatestAsync(10);
-        
+
         var userDtos = new List<UserDto>();
         foreach (var user in users)
         {
             var userDto = await _roleService.GetUserWithRolesAsync(user);
             userDtos.Add(userDto);
         }
-        
+
         return userDtos;
+    }
+
+    public async Task UpdateAccountAsync(Guid userId, AccountViewModel model)
+    {
+        var user = await GetByIdAsync(userId);
+        if (user == null)
+            throw new Exception("User is not exist");
+
+        user.UserName = model.UserName;
+        user.Email = model.Email;
+
+        await UpdateAsync(user);
+    }
+
+    public async Task UpdatePasswordAsync(Guid userId, ChangePasswordViewModel model)
+    {
+        var user = await GetByIdAsync(userId);
+        if (user == null)
+            throw new Exception("User does not exist");
+
+        var token = await _unitOfWork.UserManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _unitOfWork.UserManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+            throw new Exception(errors);
+        }
     }
 }

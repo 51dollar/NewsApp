@@ -11,4 +11,6 @@ public interface IUserService : IBaseReadService<User>
     Task DeleteAsync(Guid id);
     Task UpdateAsync(User entity);
     Task<IReadOnlyList<UserDto>> GetLatestWithRolesAsync(int count);
+    Task UpdateAccountAsync(Guid userId, AccountViewModel model);
+    Task UpdatePasswordAsync(Guid userId, ChangePasswordViewModel model);
 }

@@ -1,7 +1,6 @@
 using AutoMapper;
 using WebNews.Models.DTOs;
 using WebNews.Models.Entities;
-using WebNews.Models.ViewModels.Account;
 using WebNews.Models.ViewModels.Admin.Role;
 using WebNews.Models.ViewModels.Auth;
 
@@ -12,7 +11,6 @@ public class UserProfile : Profile
     public UserProfile()
     {
         CreateMap<User, RegisterViewModel>().ReverseMap();
-        CreateMap<User, AccountViewModel>().ReverseMap();
         CreateMap<User, UserDto>().ReverseMap();
         
         CreateMap<string, RoleItemViewModel>()
