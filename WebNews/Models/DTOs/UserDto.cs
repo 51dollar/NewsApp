@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace WebNews.Models.DTOs;
 
 public class UserDto
@@ -7,7 +9,8 @@ public class UserDto
     public string Email { get; set; }
     public List<string> Role { get; set; }
     public DateTime DateCreate { get; set; }
-    
-    public DateTime PublishDateTime => DateCreate.ToLocalTime();
     public string RolesString => string.Join(", ", Role);
+    
+    public string PublishDateCreate =>
+        DateCreate.ToLocalTime().ToString("dd MMMM yyyy", CultureInfo.CurrentCulture);
 }

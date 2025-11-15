@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace WebNews.Models.Entities;
 
@@ -19,5 +20,5 @@ public class News
     public User User { get; set; } = null!;
 
     [NotMapped]
-    public DateTime PublishDateTime => CreatedAtUtc.ToLocalTime();
+    public string PublishDateTime => CreatedAtUtc.ToLocalTime().ToString("dd MMMM yyyy", CultureInfo.CurrentCulture);
 }

@@ -1,4 +1,4 @@
-@model IEnumerable<WebNews.Models.Entities.User>
+@model IEnumerable<WebNews.Models.DTOs.UserDto>
 
 @{
     ViewData["Title"] = "All List Users";
@@ -33,7 +33,7 @@
                     
                 </td>
                 <td>
-                    @user.PublishDateCreate.ToString("dd MMM yyyy")
+                    @user.PublishDateCreate
                 </td>
                 <td>
                     <a asp-controller="Admin" asp-action="EditRoles" asp-route-id="@user.Id"
