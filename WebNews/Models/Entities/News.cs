@@ -12,6 +12,7 @@ public class News
     public string Content { get; set; } = string.Empty;
     public string? ImagePath { get; set; }
     public string? Author { get; set; }
+    public uint CountViews { get; set; } = 0;
 
     [DataType(DataType.Date)]
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;

@@ -122,4 +122,24 @@ public class NewsService : INewsService
 
         await _unitOfWork.SaveAsync();
     }
+    
+    public async Task RegisterViewAsync(Guid newsId, HttpRequest request, HttpResponse response)
+    {
+        string cookieName = $"viewed_news_{newsId}";
+
+        if (!request.Cookies.ContainsKey(cookieName))
+        {
+            await GetAll()
+                .Where(n => n.Id == newsId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(n => n.CountViews, n => n.CountViews + 1)
+                );
+
+            response.Cookies.Append(cookieName, "1", new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddMonths(6),
+                IsEssential = true
+            });
+        }
+    }
 }

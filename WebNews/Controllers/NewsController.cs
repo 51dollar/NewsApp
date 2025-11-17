@@ -33,6 +33,8 @@ public class NewsController : Controller
             return NotFound("News from db is not found");
         }
 
+        await _service.RegisterViewAsync(id.Value, Request, Response);
+
         return View(news);
     }
 }
